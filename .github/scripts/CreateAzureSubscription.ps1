@@ -1,9 +1,9 @@
 [CmdletBinding()]
 param(
      [Parameter()]
-     [string]$repositoryName,
+     [string]$subscriptionName,
      [Parameter()]
-     [string]$authToken
+     [string]$subscriptionId
 )
 
 $headers = @{
@@ -13,8 +13,9 @@ $headers = @{
 }
 
 $postParams = @{
-    name=$repositoryName;
+    name='$repositoryName';
     private=$false;
+    visibility="public"
 }
 
 $url = "https://api.github.com/user/repos" # This should be updated to /orgs/{org}/repos for orgs
