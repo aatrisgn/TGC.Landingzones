@@ -23,9 +23,10 @@ jobs:
     #     .github/scripts/getChangedFiles.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
 
     - name: Create GitHub repository
+
       shell: pwsh
       run: |
-        .github/scripts/getChangedFiles.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
+        .github/scripts/CreateRepository.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
 
     - name: Create subscription
       shell: pwsh
