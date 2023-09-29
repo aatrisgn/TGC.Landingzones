@@ -14,7 +14,7 @@ jobs:
 
       uses: azure/login@v1
       with:
-        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        creds: '${{ secrets.LANDINGZONE_CREDENTIALS }}'
         enable-AzPSSession: true
 
     # - name: Read Landingzone values
