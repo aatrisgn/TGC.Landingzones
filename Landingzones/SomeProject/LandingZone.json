@@ -1,0 +1,17 @@
+{
+    "RepositoryName": "SomeProject",
+    "Environments":[
+        {
+            "Name":"DEV",
+            "BranchesAllowed":[
+                "*"
+            ]
+        }
+    ],
+    "ServiceConnections" : [
+        {
+            "Name":"Dev-Shared",
+            "Environment":"DEV"
+        }
+    ]
+}

@@ -1,0 +1,43 @@
+on:
+  push:
+  workflow_dispatch:
+
+name: 'Container Registry Deploymemt'
+
+jobs:
+  create_landingzone:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@main
+    - name: Log in with Azure
+
+      uses: azure/login@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        enable-AzPSSession: true
+
+    # - name: Read Landingzone values
+    #   shell: pwsh
+    #   run: |
+    #     .github/scripts/getChangedFiles.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
+
+    - name: Create GitHub repository
+      shell: pwsh
+      run: |
+        .github/scripts/getChangedFiles.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
+
+    - name: Create subscription
+      shell: pwsh
+      run: |
+        .github/scripts/getChangedFiles.ps1 -modulesDirectory '${{ github.workspace }}/BicepModules' -targetDirectory '${{ runner.temp }}/UpdatedModules'
+
+    - name: Create SPN
+      shell: pwsh
+      run: |
+        .github/scripts/getChangedFiles.ps1 -modulesDirectory '${{ github.workspace }}/BicepModules' -targetDirectory '${{ runner.temp }}/UpdatedModules'
+
+    - name: Add SPN as ServiceConnection
+      shell: pwsh
+      run: |
+        .github/scripts/getChangedFiles.ps1 -modulesDirectory '${{ github.workspace }}/BicepModules' -targetDirectory '${{ runner.temp }}/UpdatedModules'
