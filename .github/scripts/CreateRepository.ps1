@@ -18,6 +18,6 @@ $postParams = @{
     visibility="public"
 }
 
-$url = "https://api.github.com/orgs/aatrisgn/repos"
+$url = "https://api.github.com/user/repos" # This should be updated to /orgs/{org}/repos for orgs
 
 Invoke-WebRequest -Uri $url -Method POST -Body $postParams -Headers $headers -UseBasicParsing
