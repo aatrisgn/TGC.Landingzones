@@ -3,8 +3,12 @@ param(
      [Parameter()]
      [string]$serviceConnectionName,
      [Parameter()]
-     [string]$subscriptionName
+     [string]$repositoryName,
+     [Parameter()]
+     [string]$subscriptionId
 )
+
+$rootUrl = "https://api.github.com"
 
 $headers = @{
     Accept = 'application/vnd.github.v3+json';
@@ -12,12 +16,20 @@ $headers = @{
     'Content-Type' = 'application/json';
 }
 
+
+
+$secretName = "$($serviceConnectionName)_credentials"
+
+$url = "$rootUrl/repos/aatrisgn/$repositoryName/actions/secrets/$secretName"
+
+
+
+$newServiceConnection = (az ad sp create-for-rbac --name $serviceConnectionName --role owner --scopes /subscriptions/$subscriptionId --sdk-auth)
+
+
 $postParams = @{
-    name='$repositoryName';
-    private=$false;
-    visibility="public"
+    encrypted_value=$newServiceConnection;
 }
 
-$url = "https://api.github.com/user/repos" # This should be updated to /orgs/{org}/repos for orgs
 
-Invoke-WebRequest -Uri $url -Method POST -Body $postParams -Headers $headers -UseBasicParsing
+Invoke-WebRequest -Uri $url -Method PUT -Body $postParams -Headers $headers
