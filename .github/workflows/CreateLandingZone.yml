@@ -37,10 +37,10 @@ jobs:
       shell: pwsh
       run: |
         az deployment tenant create \
-        --name demoTenantDeployment \
-        --location WestUS \
-        --template-file src/bicep/LandingZone.bicep
-        --parameters subscriptionName=testsubscription billingAccountName='AsgerThyregod' billingProfileName='AsgerThyregod' invoiceSectionName='AsgerThyregod' managementGroupId=LandingZoneManagementGroup
+          --name demoTenantDeployment \
+          --location WestUS \
+          --template-file src/bicep/LandingZone.bicep \
+          --parameters subscriptionName=testsubscription billingAccountName='AsgerThyregod' billingProfileName='AsgerThyregod' invoiceSectionName='AsgerThyregod' managementGroupId=LandingZoneManagementGroup
 
     - name: Create GitHub repository
       shell: pwsh
