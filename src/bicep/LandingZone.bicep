@@ -6,9 +6,9 @@ param managementGroupId string
 
 var billingScope = '/billingAccounts/${billingAccountName}/billingProfiles/${billingProfileName}/invoiceSections/${invoiceSectionName}'
 
-targetScope = 'managementGroup'
+targetScope = 'tenant'
 
-module landingZoneSubscription 'br/tgc:bicep/modules/subscription/aliases:v3' = {
+module landingZoneSubscription 'br/tgc:bicep/modules/subscription/aliases:v4' = {
   name: subscriptionName
   params:{
     billingScope:billingScope
