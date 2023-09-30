@@ -22,16 +22,25 @@ jobs:
     #   run: |
     #     .github/scripts/getChangedFiles.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
 
+    # - name: 'Deploy Infrastructure'
+    #   uses: azure/arm-deploy@v1
+    #   id: deploy
+    #   with:
+    #     scope: managementgroup
+    #     managementGroupId: LandingZoneManagementGroup
+    #     region: 'West Europe'
+    #     template: src/bicep/LandingZone.bicep
+    # parameters: subscriptionName=testsubscription billingAccountName='${{ secrets.BILLING_ACCOUNT_NAME }}' billingProfileName='${{ secrets.BILLING_PROFILE_NAME }}' invoiceSectionName='${{ secrets.INVOICE_SECTION_NAME }}' managementGroupId=LandingZoneManagementGroup
+    # parameters: subscriptionName=testsubscription billingAccountName='AsgerThyregod' billingProfileName='AsgerThyregod' invoiceSectionName='AsgerThyregod' managementGroupId=LandingZoneManagementGroup
+
     - name: 'Deploy Infrastructure'
-      uses: azure/arm-deploy@v1
-      id: deploy
-      with:
-        scope: managementgroup
-        managementGroupId: LandingZoneManagementGroup
-        region: 'West Europe'
-        template: src/bicep/LandingZone.bicep
-        #parameters: subscriptionName=testsubscription billingAccountName='${{ secrets.BILLING_ACCOUNT_NAME }}' billingProfileName='${{ secrets.BILLING_PROFILE_NAME }}' invoiceSectionName='${{ secrets.INVOICE_SECTION_NAME }}' managementGroupId=LandingZoneManagementGroup
-        parameters: subscriptionName=testsubscription billingAccountName='AsgerThyregod' billingProfileName='AsgerThyregod' invoiceSectionName='AsgerThyregod' managementGroupId=LandingZoneManagementGroup
+      shell: pwsh
+      run: |
+        az deployment tenant create \
+        --name demoTenantDeployment \
+        --location WestUS \
+        --template-file src/bicep/LandingZone.bicep
+        --parameters subscriptionName=testsubscription billingAccountName='AsgerThyregod' billingProfileName='AsgerThyregod' invoiceSectionName='AsgerThyregod' managementGroupId=LandingZoneManagementGroup
 
     - name: Create GitHub repository
       shell: pwsh
