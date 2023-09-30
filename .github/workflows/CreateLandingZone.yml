@@ -34,9 +34,10 @@ jobs:
     # parameters: subscriptionName=testsubscription billingAccountName='AsgerThyregod' billingProfileName='AsgerThyregod' invoiceSectionName='AsgerThyregod' managementGroupId=LandingZoneManagementGroup
 
     - name: 'Deploy Infrastructure'
-      shell: pwsh
-      run: |
-        az deployment tenant create \
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az deployment tenant create \
           --name demoTenantDeployment \
           --location WestUS \
           --template-file src/bicep/LandingZone.bicep \
