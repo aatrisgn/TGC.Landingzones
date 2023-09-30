@@ -31,7 +31,7 @@ jobs:
         region: 'West Europe'
         template: src/bicep/LandingZone.bicep
         #parameters: subscriptionName=testsubscription billingAccountName='${{ secrets.BILLING_ACCOUNT_NAME }}' billingProfileName='${{ secrets.BILLING_PROFILE_NAME }}' invoiceSectionName='${{ secrets.INVOICE_SECTION_NAME }}' managementGroupId=LandingZoneManagementGroup
-        parameters: subscriptionName=testsubscription billingAccountName='Asger Thyregod' billingProfileName='Asger Thyregod' invoiceSectionName='Asger Thyregod' managementGroupId=LandingZoneManagementGroup
+        parameters: subscriptionName=testsubscription billingAccountName='AsgerThyregod' billingProfileName='AsgerThyregod' invoiceSectionName='AsgerThyregod' managementGroupId=LandingZoneManagementGroup
 
     - name: Create GitHub repository
       shell: pwsh
