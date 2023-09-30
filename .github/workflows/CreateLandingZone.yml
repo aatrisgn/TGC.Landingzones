@@ -22,10 +22,10 @@ jobs:
       with:
         inlineScript: |
           az deployment tenant create \
-          --name demoTenantDeployment \
-          --location WestUS \
+          --name subscriptionDeployment \
+          --location westeurope \
           --template-file src/bicep/LandingZone.bicep \
-          --parameters subscriptionName=testsubscription billingAccountId='${{ secrets.BILLING_ACCOUNT_ID }}' billingProfileId='${{ secrets.BILLING_PROFILE_ID }}' invoiceSectionId=${{ secrets.INVOICE_SECTION_ID }} managementGroupId=LandingZoneManagementGroup
+          --parameters subscriptionName=LandingZoneDeployment billingAccountId='${{ secrets.BILLING_ACCOUNT_ID }}' billingProfileId='${{ secrets.BILLING_PROFILE_ID }}' invoiceSectionId=${{ secrets.INVOICE_SECTION_ID }} managementGroupId=LandingZoneManagementGroup
 
     - name: Create GitHub repository
       shell: pwsh
