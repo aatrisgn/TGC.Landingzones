@@ -11,8 +11,8 @@ namespace TGC.GitHubSecretConsole.Models
 		}
 
 		[JsonPropertyName("encrypted_value")]
-		public string EncryptedValue { get; set; }
+		public string EncryptedValue { get; init; }
 		[JsonPropertyName("key_id")]
-		public string KeyId { get; set; }
+		public string KeyId { get; init; }
 	}
 }
