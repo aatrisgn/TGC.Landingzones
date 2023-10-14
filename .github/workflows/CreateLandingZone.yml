@@ -1,5 +1,14 @@
 on:
   push:
+    branches: ["main"]
+    paths:
+    - '!.github/workflows/BuildGithubSecretConsole.yml'
+    - '!src/TGC.GitHubSecretConsole/**'
+  pull_request:
+    branches: ["main"]
+    paths:
+    - '!.github/workflows/BuildGithubSecretConsole.yml'
+    - '!src/TGC.GitHubSecretConsole/**'
   workflow_dispatch:
 
 name: 'Landing Zone Deployment'
