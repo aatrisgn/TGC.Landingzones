@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TGC.GitHubSecretConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "-o aatrisgn -r SomeRepository -s SECRET_NAME -t {GITHUB_PAT} -p \"{'some':'value'}\""
+    }
+  }
+}

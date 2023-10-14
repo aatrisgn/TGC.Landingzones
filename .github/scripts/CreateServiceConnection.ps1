@@ -26,7 +26,6 @@ $url = "$rootUrl/repos/aatrisgn/$repositoryName/actions/secrets/$secretName"
 
 $newServiceConnection = (az ad sp create-for-rbac --name $serviceConnectionName --role owner --scopes /subscriptions/$subscriptionId --sdk-auth)
 
-
 $postParams = @{
     encrypted_value=$newServiceConnection;
 }

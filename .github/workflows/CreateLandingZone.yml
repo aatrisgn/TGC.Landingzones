@@ -17,17 +17,29 @@ jobs:
         creds: '${{ secrets.LANDINGZONE_CREDENTIALS }}'
         enable-AzPSSession: true
 
-    - name: 'Deploy Infrastructure'
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az deployment tenant create \
-          --name subscriptionDeployment \
-          --location westeurope \
-          --template-file src/bicep/LandingZone.bicep \
-          --parameters subscriptionName=LandingZoneDeployment billingAccountId='${{ secrets.BILLING_ACCOUNT_ID }}' billingProfileId='${{ secrets.BILLING_PROFILE_ID }}' invoiceSectionId=${{ secrets.INVOICE_SECTION_ID }} managementGroupId=LandingZoneManagementGroup
+    # - name: 'Deploy Infrastructure'
+    #   uses: azure/CLI@v1
+    #   with:
+    #     inlineScript: |
+    #       az deployment tenant create \
+    #       --name subscriptionDeployment \
+    #       --location westeurope \
+    #       --template-file src/bicep/LandingZone.bicep \
+    #       --parameters subscriptionName=LandingZoneDeployment billingAccountId='${{ secrets.BILLING_ACCOUNT_ID }}' billingProfileId='${{ secrets.BILLING_PROFILE_ID }}' invoiceSectionId=${{ secrets.INVOICE_SECTION_ID }} managementGroupId=LandingZoneManagementGroup
 
     - name: Create GitHub repository
+      shell: pwsh
+      run: |
+        .github/scripts/CreateRepository.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
+
+    - name: Checkout private repo
+      uses: actions/checkout@v2
+      with:
+        repository: aatrisgn/SomeRepository
+        token: ${{ secrets.LANDINGZONE_TOKEN }}
+        path: templateRepository
+
+    - name: Add template files
       shell: pwsh
       run: |
         .github/scripts/CreateRepository.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
