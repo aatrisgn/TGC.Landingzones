@@ -12,11 +12,11 @@ param(
      [string]$invoiceSectionId
 )
 
-$existingManagementGroup = (az account management-group show --name $managementGroupId)
+$existingManagementGroup = (az account management-group show --name '$managementGroupId')
 
 if($existingManagementGroup){
     Write-Host "Management group located."
-    $existingSubscriptions = (az account management-group subscription show-sub-under-mg --name $managementGroupId --query [].displayName)
+    $existingSubscriptions = (az account management-group subscription show-sub-under-mg --name '$managementGroupId' --query [].displayName)
 
     if($existingSubscriptions -notcontains $subscriptionName) {
         $accessToken = (az account get-access-token --resource="https://management.azure.com" --query accessToken --output tsv)
