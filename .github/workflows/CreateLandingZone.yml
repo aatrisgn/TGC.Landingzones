@@ -60,8 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     name: 'CD: Create landingzone'
     env:
-      projectName: 'LandingZoneTest'
-      managementGroupId: LandingZoneManagementGroup
+        projectName: 'LandingZoneTest'
+        managementGroupId: LandingZoneManagementGroup
 
     steps:
 
