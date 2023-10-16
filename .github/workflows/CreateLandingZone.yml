@@ -2,11 +2,15 @@ on:
   push:
     branches: ["main"]
     paths:
+    - '.github/**'
+    - 'Landingzones/**'
     - '!.github/workflows/BuildGithubSecretConsole.yml'
     - '!src/TGC.GitHubSecretConsole/**'
   pull_request:
     branches: ["main"]
     paths:
+    - '.github/**'
+    - 'Landingzones/**'
     - '!.github/workflows/BuildGithubSecretConsole.yml'
     - '!src/TGC.GitHubSecretConsole/**'
   workflow_dispatch:
