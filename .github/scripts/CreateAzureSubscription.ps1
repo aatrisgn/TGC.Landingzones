@@ -12,6 +12,9 @@ param(
      [string]$invoiceSectionId
 )
 
+Write-Host "subscriptionName: $subscriptionName"
+Write-Host "Management ID: $managementGroupId"
+
 $existingManagementGroup = (az account management-group show --name "$managementGroupId")
 
 if($existingManagementGroup){
