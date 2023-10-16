@@ -1,46 +1,44 @@
 [CmdletBinding()]
 param(
      [Parameter()]
-     [string]$subscriptionName
+     [string]$subscriptionName,
+     [Parameter()]
+     [string]$managementGroupId,
+     [Parameter()]
+     [string]$billingAccountId,
+     [Parameter()]
+     [string]$billingProfileId,
+     [Parameter()]
+     [string]$invoiceSectionId
 )
 
-$existingSubscriptions = (az account management-group list) | ConvertFrom-Json
+$existingManagementGroup = (az account management-group show --name $managementGroupId)
 
-if($existingSubscriptions -notcontains $subscriptionName){
-    az account management-group subscription add --name Contoso01 --subscription $subscriptionName
+if($existingManagementGroup){
+    Write-Host "Management group located."
+    $existingSubscriptions = (az account management-group subscription show-sub-under-mg --name LandingZoneManagementGroup --query [].displayName)
+
+    if($existingSubscriptions -notcontains $subscriptionName) {
+        $accessToken = (az account get-access-token --resource="https://management.azure.com" --query accessToken --output tsv)
+
+        $headers = @{
+            Authorization = "bearer $accessToken";
+        }
+
+        $postParams = @{
+            properties = @{
+                billingScope = "/providers/Microsoft.Billing/billingAccounts/$billingAccountId/billingProfiles/$billingProfileId/invoiceSections/$invoiceSectionId"
+                DisplayName = $subscriptionName
+                Workload = "Production"
+            }
+        } | ConvertTo-Json
+
+        $url = "https://management.azure.com/providers/Microsoft.Subscription/aliases/sampleAlias?api-version=2021-10-01"
+
+        $newSubscription = Invoke-WebRequest -Uri $url -Method PUT -Body $postParams -Headers $headers -UseBasicParsing | ConvertFrom-Json
+        $subscriptionId = $newSubscription.properties.subscriptionId
+
+        $managementGroupAction = "https://management.azure.com/providers/Microsoft.Management/managementGroups/$managementGroupId/subscriptions/$($subscriptionId)?api-version=2020-05-01"
+        $updatedManagementGroup = Invoke-WebRequest -Uri $managementGroupAction -Method PUT -Headers $headers -UseBasicParsing | ConvertFrom-Json
+    }
 }
-
-Set-PSRepository PSGallery -InstallationPolicy Trusted
-Install-Module -Name Az.Accounts -AllowClobber
-
-$context = Get-AzContext
-
-$resource = Get-AzAccessToken -ResourceUrl "https://management.azure.com" -DefaultProfile $context
-# $resource = Get-AzAccessToken -ResourceTypeName ${{ inputs.resource-type-name }} -DefaultProfile $context
-
-
-# $existingSubscriptions = (az account management-group list) | ConvertFrom-Json
-
-# if($existingSubscriptions -notcontains $subscriptionName){
-#     az account management-group subscription add --name Contoso01 --subscription $subscriptionName
-# }
-
-
-#https://learn.microsoft.com/en-us/rest/api/subscription/2018-11-01-preview/subscription-factory/create-subscription?tabs=HTTP
-
-$headers = @{
-    Authorization = "bearer $($resource.Token)";
-}
-
-$postParams = @{
-    billingProfileId='$repositoryName';
-    displayName=$false; #Subscription name
-    skuId='001';
-    managementGroupId=
-}
-
-$url = "https://management.azure.com/providers/Microsoft.Billing/billingAccounts/$billingAccountName/billingProfiles/$billingProfileName/invoiceSections/$invoiceSectionName/providers/Microsoft.Subscription/createSubscription?api-version=2018-11-01-preview"
-
-Invoke-WebRequest -Uri $url -Method POST -Body $postParams -Headers $headers -UseBasicParsing
-
-POST 

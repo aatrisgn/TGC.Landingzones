@@ -14,8 +14,51 @@ on:
 name: 'Landing Zone Deployment'
 
 jobs:
+  prepare_tools:
+    runs-on: ubuntu-latest
+    name: 'CI: Build tools'
+    env:
+      projectPath: src/TGC.GitHubSecretConsole/TGC.GitHubSecretConsole/TGC.GitHubSecretConsole.csproj
+      testProjectPath: src/TGC.GitHubSecretConsole/TGC.GitHubSecretConsole.Tests/TGC.GitHubSecretConsole.Tests.csproj
+      publishPath: '${{ github.workspace }}/dist'
+
+    steps:
+      - uses: actions/checkout@v3
+  
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5   
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore $projectPath
+
+      - name: Build
+        run: dotnet build $projectPath --no-restore
+      
+      - name: Test
+        run: dotnet test $testProjectPath
+
+      - name: Publish
+        run: dotnet publish $testProjectPath --output $publishPath
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Publish GitHub Secret encryptor
+          path: |
+            $publishPath
+
   create_landingzone:
     runs-on: ubuntu-latest
+    name: 'CD: Create landingzone'
+    env:
+      projectName: 'LandingZoneTest'
+      managementGroupId: LandingZoneManagementGroup
+
     steps:
 
     - uses: actions/checkout@main
@@ -26,44 +69,24 @@ jobs:
         creds: '${{ secrets.LANDINGZONE_CREDENTIALS }}'
         enable-AzPSSession: true
 
-    # - name: 'Deploy Infrastructure'
-    #   uses: azure/CLI@v1
-    #   with:
-    #     inlineScript: |
-    #       az deployment tenant create \
-    #       --name subscriptionDeployment \
-    #       --location westeurope \
-    #       --template-file src/bicep/LandingZone.bicep \
-    #       --parameters subscriptionName=LandingZoneDeployment billingAccountId='${{ secrets.BILLING_ACCOUNT_ID }}' billingProfileId='${{ secrets.BILLING_PROFILE_ID }}' invoiceSectionId=${{ secrets.INVOICE_SECTION_ID }} managementGroupId=LandingZoneManagementGroup
+    - name: Create Azure Subscription
+      shell: pwsh
+      run: |
+        .github/scripts/CreateAzureSubscription -subscriptionName $projectName -managementGroupId $managementGroupId -billingAccountId ${{ secrets.BILLING_ACCOUNT_ID }} -billingProfileId ${{ secrets.BILLING_PROFILE_ID }} -invoiceSectionId ${{ secrets.INVOICE_SECTION_ID }}
 
     - name: Create GitHub repository
       shell: pwsh
       run: |
-        .github/scripts/CreateRepository.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository123'
+        .github/scripts/CreateRepository.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName $projectName
 
-    - name: Create subscription
+    - name: Create SPN on Project
       shell: pwsh
       run: |
-        .github/scripts/CreateAzureSubscription.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
+        .github/scripts/CreateServiceConnection.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -projectName $projectName
 
     - name: Checkout private repo
       uses: actions/checkout@v2
       with:
-        repository: aatrisgn/SomeRepository
+        repository: aatrisgn/$projectName
         token: ${{ secrets.LANDINGZONE_TOKEN }}
         path: templateRepository
-
-    - name: Add template files
-      shell: pwsh
-      run: |
-        .github/scripts/CreateRepository.ps1 -authToken '${{ secrets.LANDINGZONE_TOKEN }}' -repositoryName 'SomeRepository'
-
-    - name: Create SPN
-      shell: pwsh
-      run: |
-        .github/scripts/getChangedFiles.ps1 -modulesDirectory '${{ github.workspace }}/BicepModules' -targetDirectory '${{ runner.temp }}/UpdatedModules'
-
-    - name: Add SPN as ServiceConnection
-      shell: pwsh
-      run: |
-        .github/scripts/getChangedFiles.ps1 -modulesDirectory '${{ github.workspace }}/BicepModules' -targetDirectory '${{ runner.temp }}/UpdatedModules'

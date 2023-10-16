@@ -16,8 +16,8 @@ $headers = @{
 
 function CreateRepository(){    
     $repositoryPayload = @{
-        name=$repositoryName;
-        private=$false;
+        name="TGC.$repositoryName"
+        private=$false
     } | ConvertTo-Json
     
     $createRepositoryUrl = "$rootUrl/user/repos" # This should be updated to /orgs/{org}/repos for orgs
