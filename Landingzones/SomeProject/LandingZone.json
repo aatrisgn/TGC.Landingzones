@@ -1,4 +1,5 @@
 {
+    "$schema": "../../Schemas/landingZoneSchema.json",
     "RepositoryName": "SomeProject",
     "Environments":[
         {
