@@ -1,7 +1,6 @@
-﻿namespace TGC.LandingZone.Api.Models
+﻿namespace TGC.LandingZone.Api.Models;
+
+public enum EnvironmentType
 {
-	public enum EnvironmentType
-	{
-		DEV, TST, STG, PRD
-	}
+	DEV, TST, STG, PRD
 }
