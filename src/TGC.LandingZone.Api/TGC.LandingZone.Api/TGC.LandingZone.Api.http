@@ -1,0 +1,26 @@
+@TGC.LandingZone.Api_HostAddress = https://localhost:7288/api
+
+GET {{TGC.LandingZone.Api_HostAddress}}/projects/
+Accept: application/json
+
+###
+
+POST {{TGC.LandingZone.Api_HostAddress}}/Projects
+Content-Type: application/json
+
+{
+  "name": "teast",
+  "shortName": "tst",
+  "description": "asdasfasffassf",
+  "applicationEnvironments": [
+    {
+      "type": 1,
+      "deploymentZones": [
+        {
+          "name": "tst",
+          "location": 1
+        }
+      ]
+    }
+  ]
+}
