@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   Configure-DNS:
+    environment: production
     runs-on: ubuntu-latest
     steps:
     - name: Azure OIDC Login
