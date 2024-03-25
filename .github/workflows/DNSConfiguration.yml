@@ -1,0 +1,39 @@
+on:
+  push:
+    branches: ["main"]
+    paths:
+    - '.github/workflows/DNSConfiguration.yml'
+    - 'bicep/main.bicep'
+  pull_request:
+    branches: ["main"]
+    paths:
+    - '.github/workflows/DNSConfiguration.yml'
+    - 'bicep/main.bicep'
+  workflow_dispatch:
+
+name: 'Landing Zone Deployment'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  Configure-DNS:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Azure OIDC Login
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_WIF_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_WIF_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+
+    - name: Deploy Bicep file
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ secrets.AZURE_LANDINGZONE_RG }}
+        template: ../bicep/main.bicep
+        parameters: 'frontDoorName=afd-tgc-prd-main-global'
+        failOnStdErr: false
