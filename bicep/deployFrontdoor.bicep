@@ -41,7 +41,7 @@ resource myFrontDoorResource 'Microsoft.Network/frontDoors@2021-06-01' =  {
   properties: {
     enabledState: 'Enabled'
 
-    // frontendEndpoints: [
+    frontendEndpoints: [
     //   for frontendEndpoint in customDomains : {
     //     name: '{frontEndEndPoint}1'
     //     properties: {
@@ -49,28 +49,28 @@ resource myFrontDoorResource 'Microsoft.Network/frontDoors@2021-06-01' =  {
     //       sessionAffinityEnabledState: 'Disabled'
     //     }
     //   }
-    // ]
+    ]
 
-    // loadBalancingSettings: [
-    //   {
-    //     name: loadBalancingSettingsName
-    //     properties: {
-    //       sampleSize: 4
-    //       successfulSamplesRequired: 2
-    //     }
-    //   }
-    // ]
+    loadBalancingSettings: [
+      {
+        name: 'Somethgon'
+        properties: {
+          sampleSize: 4
+          successfulSamplesRequired: 2
+        }
+      }
+    ]
 
-    // healthProbeSettings: [
-    //   {
-    //     name: healthProbeSettingsName
-    //     properties: {
-    //       path: '/health'
-    //       protocol: 'Http'
-    //       intervalInSeconds: 120
-    //     }
-    //   }
-    // ]
+    healthProbeSettings: [
+      {
+        name: 'Something12'
+        properties: {
+          path: '/health'
+          protocol: 'Http'
+          intervalInSeconds: 120
+        }
+      }
+    ]
 
     // backendPools: [
     //   for backendPool in backendPools : {
