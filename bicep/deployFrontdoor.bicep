@@ -4,6 +4,10 @@ param dnsZones array
 param rootDNSZoneFQDN string
 param location string = resourceGroup().location
 
+resource rootDnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = {
+  name: rootDNSZoneFQDN
+}
+
 resource createdDnsZones 'Microsoft.Network/dnsZones@2018-05-01' = [for dnsZone in dnsZones : {
   name: dnsZone.ZoneName
   location: location
@@ -11,10 +15,6 @@ resource createdDnsZones 'Microsoft.Network/dnsZones@2018-05-01' = [for dnsZone 
     zoneType: 'Public'
   }
 }]
-
-resource rootDnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = {
-  name: rootDNSZoneFQDN
-}
 
 resource childNS 'Microsoft.Network/dnsZones/NS@2018-05-01' = [for i in range(0, length(dnsZones)) : {
   dependsOn: createdDnsZones

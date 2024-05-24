@@ -39,6 +39,6 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ secrets.AZURE_LANDINGZONE_RG }}
-        template: bicep/main.bicep
-        parameters: 'frontDoorName=afd-tgc-prd-main-global'
+        template: bicep/deployFrontdoor.bicep
+        parameters: 'bicep/parameters/prd.parameters.bicepparam'
         failOnStdErr: false
