@@ -11,7 +11,7 @@ on:
     - 'bicep/main.bicep'
   workflow_dispatch:
 
-name: 'Landing Zone Deployment'
+name: 'DNS Configuration Deployment'
 
 permissions:
   id-token: write
