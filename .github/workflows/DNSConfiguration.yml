@@ -3,7 +3,8 @@ on:
     branches: ["main"]
     paths:
     - '.github/workflows/DNSConfiguration.yml'
-    - 'bicep/main.bicep'
+    - 'bicep/deployDns.bicep'
+    - 'bicep/parameters/prd.parameters.bicepparam'
   pull_request:
     branches: ["main"]
     paths:
@@ -18,7 +19,8 @@ permissions:
   contents: read
 
 jobs:
-  Configure-DNS:
+  Configure-DEV-DNS:
+    name: Configure DEV Routing
     environment: production
     runs-on: ubuntu-latest
     steps:
@@ -34,11 +36,80 @@ jobs:
         subscription-id: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
         enable-AzPSSession: true
 
+    - name: Build
+      shell: pwsh
+      run: |
+        .github/scripts/CompileApplicationDNSZones.ps1 -Environment DEV
+
     - name: Deploy Bicep file
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ secrets.AZURE_LANDINGZONE_RG }}
-        template: bicep/deployFrontdoor.bicep
-        parameters: 'bicep/parameters/prd.parameters.bicepparam'
+        template: bicep/deployDns.bicep
+        parameters: 'bicep/parameters/applicationDNSZones.parameters.DEV.json'
+        failOnStdErr: false
+
+  Configure-STA-DNS:
+    needs: Configure-DEV-DNS
+    name: Configure STA Routing
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Azure OIDC Login
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_WIF_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_WIF_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+
+    - name: Build
+      shell: pwsh
+      run: |
+        .github/scripts/CompileApplicationDNSZones.ps1 -Environment STA
+
+    - name: Deploy Bicep file
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ secrets.AZURE_LANDINGZONE_RG }}
+        template: bicep/deployDns.bicep
+        parameters: 'bicep/parameters/applicationDNSZones.parameters.STA.json'
+        failOnStdErr: false
+
+  Configure-PRD-DNS:
+    needs: Configure-STA-DNS
+    name: Configure PRD Routing
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Azure OIDC Login
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_WIF_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_WIF_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+
+    - name: Build
+      shell: pwsh
+      run: |
+        .github/scripts/CompileApplicationDNSZones.ps1 -Environment PRD
+
+    - name: Deploy Bicep file
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
+        resourceGroupName: ${{ secrets.AZURE_LANDINGZONE_RG }}
+        template: bicep/deployDns.bicep
+        parameters: 'bicep/parameters/applicationDNSZones.parameters.PRD.json'
         failOnStdErr: false

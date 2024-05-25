@@ -2,13 +2,13 @@ using '../deployFrontdoor.bicep'
 
 param dnsZones = [
   {
-    name: 'hoolixyz'
+    ZoneName: 'hoolixyz'
   }
   {
-    name: 'moonshot'
+    ZoneName: 'moonshot'
   }
   {
-    name: 'FTXTrading'
+    ZoneName: 'FTXTrading'
   }
 ]
 
