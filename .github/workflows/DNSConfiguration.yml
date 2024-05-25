@@ -3,13 +3,11 @@ on:
     branches: ["main"]
     paths:
     - '.github/workflows/DNSConfiguration.yml'
-    - 'bicep/deployDns.bicep'
-    - 'bicep/parameters/prd.parameters.bicepparam'
+    - 'bicep/frontdoorDeployment.bicep'
   pull_request:
     branches: ["main"]
     paths:
     - '.github/workflows/DNSConfiguration.yml'
-    - 'bicep/main.bicep'
   workflow_dispatch:
 
 name: 'DNS Configuration Deployment'
@@ -46,7 +44,7 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ secrets.AZURE_LANDINGZONE_RG }}
-        template: bicep/deployDns.bicep
+        template: bicep/frontdoorDeployment.bicep
         parameters: 'bicep/parameters/applicationDNSZones.parameters.DEV.json'
         failOnStdErr: false
 
@@ -78,7 +76,7 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ secrets.AZURE_LANDINGZONE_RG }}
-        template: bicep/deployDns.bicep
+        template: bicep/frontdoorDeployment.bicep
         parameters: 'bicep/parameters/applicationDNSZones.parameters.STA.json'
         failOnStdErr: false
 
@@ -110,6 +108,6 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_WIF_SUBSCRIPTION_ID }}
         resourceGroupName: ${{ secrets.AZURE_LANDINGZONE_RG }}
-        template: bicep/deployDns.bicep
+        template: bicep/frontdoorDeployment.bicep
         parameters: 'bicep/parameters/applicationDNSZones.parameters.PRD.json'
         failOnStdErr: false
