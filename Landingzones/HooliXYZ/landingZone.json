@@ -1,0 +1,21 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName":"HooliXYZ",
+    "Environments":[
+        {
+            "Name":"Dev",
+            "Location":"WestEurope",
+            "Type":"DevTst"
+        },
+        {
+            "Name":"sta",
+            "Location":"WestEurope",
+            "Type":"StaPrd"
+        },
+        {
+            "Name":"prd",
+            "Location":"WestEurope",
+            "Type":"StaPrd"
+        }
+    ]
+}

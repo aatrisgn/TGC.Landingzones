@@ -1,0 +1,67 @@
+[
+  {
+    "ProductName": "Moonshot",
+    "Environments": [
+      {
+        "Name": "Dev",
+        "Location": "WestEurope",
+        "Type": "DevTst"
+      },
+      {
+        "Name": "sta",
+        "Location": "WestEurope",
+        "Type": "StaPrd"
+      },
+      {
+        "Name": "prd",
+        "Location": "WestEurope",
+        "Type": "StaPrd"
+      }
+    ]
+  },
+  {
+    "ProductName": "FTXTrading",
+    "Environments": [
+      {
+        "Name": "Dev",
+        "Location": "WestEurope",
+        "Type": "DevTst"
+      },
+      {
+        "Name": "Tst",
+        "Location": "WestEurope",
+        "Type": "DevTst"
+      },
+      {
+        "Name": "sta",
+        "Location": "WestEurope",
+        "Type": "StaPrd"
+      },
+      {
+        "Name": "prd",
+        "Location": "WestEurope",
+        "Type": "StaPrd"
+      }
+    ]
+  },
+  {
+    "ProductName": "HooliXYZ",
+    "Environments": [
+      {
+        "Name": "Dev",
+        "Location": "WestEurope",
+        "Type": "DevTst"
+      },
+      {
+        "Name": "sta",
+        "Location": "WestEurope",
+        "Type": "StaPrd"
+      },
+      {
+        "Name": "prd",
+        "Location": "WestEurope",
+        "Type": "StaPrd"
+      }
+    ]
+  }
+]
