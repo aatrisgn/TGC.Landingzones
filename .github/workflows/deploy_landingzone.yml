@@ -45,13 +45,13 @@ jobs:
 
     - name: Apply TF
       shell: pwsh
-      if: ${{ github.event.inputs.applyTF == true || github.event_name != 'push' || github.event_name != 'pull_request' }}
+      if: github.event.inputs.applyTF == true || github.event_name != 'push' || github.event_name != 'pull_request'
       run: |
         ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
 
     - name: Do not apply TF
       shell: pwsh
-      if: ${{ github.event.inputs.applyTF == true || github.event_name != 'push' || github.event_name != 'pull_request' }}
+      if: github.event.inputs.applyTF == false || github.event_name == 'push' || github.event_name == 'pull_request'
       run: |
         ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
 
@@ -77,16 +77,11 @@ jobs:
     #     TF_VAR_sshkey_keyvault_name: "${{ secrets.KEYVAULT_NAME }}"
     #     TF_VAR_sshkey_keyvault_resource_group_name: "${{ secrets.KEYVAULT_RESOURCE_GROUP_NAME }}"
 
-    # - name: Terraform Apply
-    #   run: terraform apply -auto-approve tfplan
-    #   env:
-    #     TF_VAR_sshkey_secret_name: "${{ secrets.SECRET_NAME }}"
-    #     TF_VAR_sshkey_keyvault_name: "${{ secrets.KEYVAULT_NAME }}"
-    #     TF_VAR_sshkey_keyvault_resource_group_name: "${{ secrets.KEYVAULT_RESOURCE_GROUP_NAME }}"
-
   deploy_landingzones:
     runs-on: ubuntu-latest
     environment: prd
+    needs: plan_landingzones
+    if: github.event.inputs.applyTF == false || github.event_name == 'push' || github.event_name == 'pull_request'
     defaults:
       run:
         working-directory: ./terraform
