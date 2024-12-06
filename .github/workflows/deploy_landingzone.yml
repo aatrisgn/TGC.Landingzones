@@ -7,11 +7,11 @@ on:
     branches: ["main"]
   workflow_dispatch:
     inputs:
-      skipApply:
+      applyTF:
         description: 'Apply TF plan?'
         required: true
         type: boolean
-        default: true
+        default: false
 
 permissions:
   id-token: write
@@ -19,9 +19,9 @@ permissions:
   pull-requests: write
 
 jobs:
-  deploy_dev:
+  plan_landingzones:
     runs-on: ubuntu-latest
-    environment: prod
+    environment: dev
     defaults:
       run:
         working-directory: ./terraform
@@ -37,16 +37,23 @@ jobs:
 
     - name: Install Terraform
       run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
-
-    - name: Test script
-      shell: pwsh
-      run: |
-        ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
     
     - name: Test script
       shell: pwsh
       run: |
-        ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event.inputs.skipApply }}"
+        ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event.inputs.applyTF }}"
+
+    - name: Apply TF
+      shell: pwsh
+      if: ${{ github.event.inputs.applyTF == true || github.event_name != 'push' || github.event_name != 'pull_request' }}
+      run: |
+        ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
+
+    - name: Do not apply TF
+      shell: pwsh
+      if: ${{ github.event.inputs.applyTF == true || github.event_name != 'push' || github.event_name != 'pull_request' }}
+      run: |
+        ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
 
     # - name: Terraform Fmt
     #   run: terraform fmt -check
@@ -76,3 +83,62 @@ jobs:
     #     TF_VAR_sshkey_secret_name: "${{ secrets.SECRET_NAME }}"
     #     TF_VAR_sshkey_keyvault_name: "${{ secrets.KEYVAULT_NAME }}"
     #     TF_VAR_sshkey_keyvault_resource_group_name: "${{ secrets.KEYVAULT_RESOURCE_GROUP_NAME }}"
+
+  deploy_landingzones:
+    runs-on: ubuntu-latest
+    environment: prd
+    defaults:
+      run:
+        working-directory: ./terraform
+    
+    # env:
+    #   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+    #   ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+    #   ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+    #   ARM_USE_AZUREAD: true
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Terraform
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
+
+    - name: Test script
+      shell: pwsh
+      run: |
+        ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
+    
+    - name: Test script
+      shell: pwsh
+      run: |
+        ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event.inputs.applyTF }}"
+
+    # - name: Terraform Fmt
+    #   run: terraform fmt -check
+
+    # - name: Terraform Init
+    #   run: |
+    #     terraform init \
+    #     -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME_DEV }}" \
+    #     -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME_DEV }}" \
+    #     -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME_DEV }}" \
+    #     -backend-config=key="k8cluster.dev.tfstate"
+        
+    # - name: Terraform Validate
+    #   run: terraform validate
+
+    # - name: Terraform Plan
+    #   id: plan
+    #   run: terraform plan -input=false -var-file="envs/dev/vars.dev.tfvars" -out=tfplan
+    #   env:
+    #     TF_VAR_sshkey_secret_name: "${{ secrets.SECRET_NAME }}"
+    #     TF_VAR_sshkey_keyvault_name: "${{ secrets.KEYVAULT_NAME }}"
+    #     TF_VAR_sshkey_keyvault_resource_group_name: "${{ secrets.KEYVAULT_RESOURCE_GROUP_NAME }}"
+
+    # - name: Terraform Apply
+    #   run: terraform apply -auto-approve tfplan
+    #   env:
+    #     TF_VAR_sshkey_secret_name: "${{ secrets.SECRET_NAME }}"
+    #     TF_VAR_sshkey_keyvault_name: "${{ secrets.KEYVAULT_NAME }}"
+    #     TF_VAR_sshkey_keyvault_resource_group_name: "${{ secrets.KEYVAULT_RESOURCE_GROUP_NAME }}"
+    
