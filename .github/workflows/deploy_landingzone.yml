@@ -23,7 +23,7 @@ jobs:
     environment: dev
     defaults:
       run:
-        working-directory: ./Terraform
+        working-directory: ./terraform
     
     # env:
     #   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
@@ -35,7 +35,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install Terraform
-      run: bash ${{ github.workspace }}/.github/scripts/install_terraform.sh
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
 
     - name: Test script
       shell: pwsh
