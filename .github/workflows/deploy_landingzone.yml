@@ -69,7 +69,7 @@ jobs:
     - name: Generate landingzone var file
       shell: pwsh
       run: |
-        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/landingzones" -outputFilePath "${{ github.workspace }}/terraform/${{ env.LANDING_ZONE_FILE_NAME }}"
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/${{ env.LANDING_ZONE_FILE_NAME }}"
 
     - name: Terraform Init
       run: |
@@ -110,7 +110,7 @@ jobs:
     - name: Generate landingzone var file
       shell: pwsh
       run: |
-        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/landingzones" -outputFilePath "${{ github.workspace }}/terraform/${{ env.LANDING_ZONE_FILE_NAME }}"
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/${{ env.LANDING_ZONE_FILE_NAME }}"
 
     - name: Terraform Init
       run: |
