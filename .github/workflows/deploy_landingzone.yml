@@ -23,6 +23,7 @@ env:
 
 jobs:
   plan_landingzones:
+    name: "Plan landingzone deployment"
     runs-on: ubuntu-latest
     environment: prd
     defaults:
@@ -79,6 +80,7 @@ jobs:
   deploy_landingzones:
     runs-on: ubuntu-latest
     environment: prd
+    name: "Apply landingzone deployment"
     needs: plan_landingzones
     if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
     defaults:
@@ -90,6 +92,7 @@ jobs:
       ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
       ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
       ARM_USE_AZUREAD: true
+      GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
 
     steps:
     - uses: actions/checkout@v3
