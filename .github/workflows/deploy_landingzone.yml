@@ -69,7 +69,7 @@ jobs:
     - name: Generate landingzone var file
       shell: pwsh
       run: |
-        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/landingzones" -outputFilePath "${{ github.workspace }}/terraform/$LANDING_ZONE_FILE_NAME"
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/landingzones" -outputFilePath "${{ github.workspace }}/terraform/${{ env.LANDING_ZONE_FILE_NAME }}"
 
     - name: Terraform Init
       run: |
@@ -84,7 +84,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=$LANDING_ZONE_FILE_NAME -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}"
+      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}"
 
   deploy_landingzones:
     runs-on: ubuntu-latest
