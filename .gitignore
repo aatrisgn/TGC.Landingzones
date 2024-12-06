@@ -18,6 +18,10 @@ appsettings.development.json
 # Mono auto generated files
 mono_crash.*
 
+*.tfstate
+*.tfstate.backup
+.terraform/*
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

@@ -1,0 +1,16 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName":"FTXTrading",
+    "Environments":[
+        {
+            "Name":"Dev",
+            "Location":"WestEurope",
+            "Type":"DevTst"
+        },
+        {
+            "Name":"prd",
+            "Location":"WestEurope",
+            "Type":"StaPrd"
+        }
+    ]
+}
