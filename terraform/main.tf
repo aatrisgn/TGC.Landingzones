@@ -127,7 +127,7 @@ resource "azuread_application" "product_environment_app_regs" {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
 
-  display_name = lower("${each.key}-spn")
+  display_name = lower("tgc-${each.key}-spn")
 }
 
 resource "azuread_application_federated_identity_credential" "spn_federated_identity" {

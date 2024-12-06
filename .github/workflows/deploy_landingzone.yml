@@ -21,16 +21,16 @@ permissions:
 jobs:
   plan_landingzones:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: prd
     defaults:
       run:
         working-directory: ./terraform
     
-    # env:
-    #   ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
-    #   ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
-    #   ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
-    #   ARM_USE_AZUREAD: true
+    env:
+      ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+      ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+      ARM_USE_AZUREAD: true
 
     steps:
     - uses: actions/checkout@v3
@@ -56,32 +56,32 @@ jobs:
 
     - name: Do not apply TF
       shell: pwsh
-      if: github.event.inputs.applyTF == false || github.event_name == 'push' || github.event_name == 'pull_request'
+      if: github.event.inputs.applyTF == 'false' || github.event_name == 'push' || github.event_name == 'pull_request'
       run: |
         ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
 
-    # Should be fixed as part of commits also
     - name: Terraform Fmt
       run: terraform fmt -check
 
-    # - name: Terraform Init
-    #   run: |
-    #     terraform init \
-    #     -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME_DEV }}" \
-    #     -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME_DEV }}" \
-    #     -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME_DEV }}" \
-    #     -backend-config=key="k8cluster.dev.tfstate"
-        
-    # - name: Terraform Validate
-    #   run: terraform validate
+    - name: Generate landingzone var file
+      shell: pwsh
+      run: |
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/landingzones" -outputFilePath "${{ github.workspace }}/terraform"
 
-    # - name: Terraform Plan
-    #   id: plan
-    #   run: terraform plan -input=false -var-file="envs/dev/vars.dev.tfvars" -out=tfplan
-    #   env:
-    #     TF_VAR_sshkey_secret_name: "${{ secrets.SECRET_NAME }}"
-    #     TF_VAR_sshkey_keyvault_name: "${{ secrets.KEYVAULT_NAME }}"
-    #     TF_VAR_sshkey_keyvault_resource_group_name: "${{ secrets.KEYVAULT_RESOURCE_GROUP_NAME }}"
+    - name: Terraform Init
+      run: |
+        terraform init \
+        -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
+        -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
+        -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
+        -backend-config=key="landingzone.prd.tfstate"
+        
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -input=false -var-file="landingZone.json" -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}"
 
   deploy_landingzones:
     runs-on: ubuntu-latest
@@ -102,17 +102,12 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install Terraform
-      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
-
-    - name: Test script
-      shell: pwsh
-      run: |
-        ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
     
-    - name: Test script
+    - name: Generate landingzone var file
       shell: pwsh
       run: |
-        ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event.inputs.applyTF }}"
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/landingzones" -outputFilePath "${{ github.workspace }}/terraform"
 
     # - name: Terraform Init
     #   run: |
@@ -127,16 +122,8 @@ jobs:
 
     # - name: Terraform Plan
     #   id: plan
-    #   run: terraform plan -input=false -var-file="envs/dev/vars.dev.tfvars" -out=tfplan
-    #   env:
-    #     TF_VAR_sshkey_secret_name: "${{ secrets.SECRET_NAME }}"
-    #     TF_VAR_sshkey_keyvault_name: "${{ secrets.KEYVAULT_NAME }}"
-    #     TF_VAR_sshkey_keyvault_resource_group_name: "${{ secrets.KEYVAULT_RESOURCE_GROUP_NAME }}"
+    #   run: terraform plan -input=false -var-file="landingZone.json" -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}" -out=tfplan
 
     # - name: Terraform Apply
     #   run: terraform apply -auto-approve tfplan
-    #   env:
-    #     TF_VAR_sshkey_secret_name: "${{ secrets.SECRET_NAME }}"
-    #     TF_VAR_sshkey_keyvault_name: "${{ secrets.KEYVAULT_NAME }}"
-    #     TF_VAR_sshkey_keyvault_resource_group_name: "${{ secrets.KEYVAULT_RESOURCE_GROUP_NAME }}"
     
