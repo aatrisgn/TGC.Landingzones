@@ -10,7 +10,8 @@ on:
       skipApply:
         description: 'Apply TF plan?'
         required: true
-        default: 'true'
+        type: boolean
+        default: true
 
 permissions:
   id-token: write
@@ -20,7 +21,7 @@ permissions:
 jobs:
   deploy_dev:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: prod
     defaults:
       run:
         working-directory: ./terraform
