@@ -11,7 +11,7 @@ terraform {
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.23.0"
+      version = "~> 3.0.2"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -25,6 +25,7 @@ provider "github" {}
 
 # Configure the Azure Active Directory Provider
 provider "azuread" {
+  use_oidc  = true
   tenant_id = var.tenant_id
 }
 
