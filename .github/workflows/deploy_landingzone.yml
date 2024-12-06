@@ -38,10 +38,15 @@ jobs:
     - name: Install Terraform
       run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
     
-    - name: Test script
+    - name: Get applyTF
       shell: pwsh
       run: |
         ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event.inputs.applyTF }}"
+
+    - name: Get event_name
+      shell: pwsh
+      run: |
+        ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event_name }}"
 
     - name: Apply TF
       shell: pwsh
@@ -55,8 +60,9 @@ jobs:
       run: |
         ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
 
-    # - name: Terraform Fmt
-    #   run: terraform fmt -check
+    # Should be fixed as part of commits also
+    - name: Terraform Fmt
+      run: terraform fmt -check
 
     # - name: Terraform Init
     #   run: |
@@ -107,9 +113,6 @@ jobs:
       shell: pwsh
       run: |
         ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event.inputs.applyTF }}"
-
-    # - name: Terraform Fmt
-    #   run: terraform fmt -check
 
     # - name: Terraform Init
     #   run: |
