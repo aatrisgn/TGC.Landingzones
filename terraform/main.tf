@@ -5,7 +5,7 @@ terraform {
   }
   backend "azuread" {
     use_azuread_auth = true
-    use_oidc = true
+    use_oidc         = true
   }
 
   required_providers {
@@ -29,7 +29,7 @@ provider "github" {}
 
 # Configure the Azure Active Directory Provider
 provider "azuread" {
-  use_oidc = true
+  use_oidc  = true
   tenant_id = var.tenant_id
 }
 
