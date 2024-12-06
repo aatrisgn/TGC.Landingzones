@@ -143,7 +143,7 @@ resource "azuread_application_federated_identity_credential" "spn_federated_iden
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
 
-  application_id = azuread_application.product_environment_app_regs[each.key].object_id
+  application_id = azuread_application.product_environment_app_regs[each.key].id
 
   display_name = each.value.product_environment
   subject      = "repo:aatrisgn/TGC.${each.value.product_name}:environment:${each.value.environment_name}"
