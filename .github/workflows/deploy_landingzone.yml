@@ -45,7 +45,7 @@ jobs:
 
     - name: Apply TF
       shell: pwsh
-      if: github.event.inputs.applyTF == true || github.event_name != 'push' || github.event_name != 'pull_request'
+      if: github.event.inputs.applyTF == true && github.event_name != 'push' && github.event_name != 'pull_request'
       run: |
         ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
 
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: prd
     needs: plan_landingzones
-    if: github.event.inputs.applyTF == false || github.event_name == 'push' || github.event_name == 'pull_request'
+    if: github.event.inputs.applyTF == true && github.event_name != 'push' && github.event_name != 'pull_request'
     defaults:
       run:
         working-directory: ./terraform
