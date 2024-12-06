@@ -1,4 +1,9 @@
 terraform {
+  backend "azurerm" {
+    use_azuread_auth = true
+    use_oidc         = true
+  }
+
   required_providers {
     github = {
       source  = "integrations/github"
@@ -10,7 +15,7 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=3.0.0"
+      version = "=4.0.0"
     }
   }
 }
@@ -24,6 +29,7 @@ provider "azuread" {
 }
 
 provider "azurerm" {
+  use_oidc = true
   features {}
 }
 
