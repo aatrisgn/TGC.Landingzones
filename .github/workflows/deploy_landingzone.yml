@@ -37,7 +37,7 @@ jobs:
     - name: Install Terraform
       run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
 
-    - name: Add template files
+    - name: Test script
       shell: pwsh
       run: |
         ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
