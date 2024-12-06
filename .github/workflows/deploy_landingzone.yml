@@ -20,7 +20,7 @@ permissions:
 jobs:
   deploy_dev:
     runs-on: ubuntu-latest
-    environment: dev #Should be changed, lol
+    environment: dev
     defaults:
       run:
         working-directory: ./Terraform
@@ -35,7 +35,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install Terraform
-      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
+      run: bash ${{ github.workspace }}/.github/scripts/install_terraform.sh
 
     - name: Test script
       shell: pwsh
