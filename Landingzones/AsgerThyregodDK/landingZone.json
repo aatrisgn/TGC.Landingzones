@@ -1,6 +1,6 @@
 {
     "$schema": "../Schemas/landingZoneSchema.json",
-    "ProductName":"FTXTrading",
+    "ProductName":"asgerthyregoddk",
     "Environments":[
         {
             "Name":"Dev",
