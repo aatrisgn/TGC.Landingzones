@@ -117,6 +117,6 @@ jobs:
       id: plan
       run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}" -out=tfplan
 
-    # - name: Terraform Apply
-    #   run: terraform apply -auto-approve tfplan
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
     
