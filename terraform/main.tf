@@ -3,10 +3,6 @@ terraform {
     use_azuread_auth = true
     use_oidc         = true
   }
-  backend "azuread" {
-    use_azuread_auth = true
-    use_oidc         = true
-  }
 
   required_providers {
     github = {
