@@ -142,7 +142,7 @@ resource "azuread_application_federated_identity_credential" "spn_federated_iden
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
 
-  application_object_id = azuread_application.product_environment_app_regs[each.key].object_id
+  application_id = azuread_application.product_environment_app_regs[each.key].object_id
 
   display_name = each.value.product_environment
   subject      = "repo:aatrisgn/${each.value.product_name}:environment:${each.value.environment_name}"
@@ -153,8 +153,8 @@ resource "azuread_application_federated_identity_credential" "spn_federated_iden
 }
 
 resource "azuread_service_principal" "product_environment_spns" {
-  for_each       = azuread_application.product_environment_app_regs
-  application_id = each.value.application_id
+  for_each  = azuread_application.product_environment_app_regs
+  client_id = each.value.application_id
 }
 
 resource "azurerm_role_assignment" "product_environment_owner" {
