@@ -40,16 +40,6 @@ jobs:
 
     - name: Install Terraform
       run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
-    
-    - name: Get applyTF
-      shell: pwsh
-      run: |
-        ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event.inputs.applyTF }}"
-
-    - name: Get event_name
-      shell: pwsh
-      run: |
-        ${{ github.workspace }}/.github/scripts/test_script.ps1 "${{ github.event_name }}"
 
     - name: Apply TF
       shell: pwsh

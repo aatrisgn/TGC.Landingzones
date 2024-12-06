@@ -154,7 +154,7 @@ resource "azuread_application_federated_identity_credential" "spn_federated_iden
 
 resource "azuread_service_principal" "product_environment_spns" {
   for_each  = azuread_application.product_environment_app_regs
-  client_id = each.value.application_id
+  client_id = each.value.client_id
 }
 
 resource "azurerm_role_assignment" "product_environment_owner" {
@@ -217,7 +217,7 @@ resource "github_actions_secret" "secret_client_id" {
   #Should directly reference repositories
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_client_id"
-  plaintext_value = azuread_application.product_environment_app_regs[each.key].application_id
+  plaintext_value = azuread_application.product_environment_app_regs[each.key].client_id
 
   depends_on = [github_repository.product_repository]
 }
