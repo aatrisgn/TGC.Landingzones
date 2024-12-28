@@ -1,0 +1,11 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName":"HomeAutomation",
+    "Environments":[
+        {
+            "Name":"Dev",
+            "Location":"WestEurope",
+            "Type":"DevTst"
+        }
+    ]
+}
