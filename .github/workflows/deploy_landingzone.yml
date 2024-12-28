@@ -42,18 +42,6 @@ jobs:
     - name: Install Terraform
       run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
 
-    - name: Apply TF
-      shell: pwsh
-      if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
-      run: |
-        ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
-
-    - name: Do not apply TF
-      shell: pwsh
-      if: github.event.inputs.applyTF == 'false' || github.event_name == 'push' || github.event_name == 'pull_request'
-      run: |
-        ${{ github.workspace }}/.github/scripts/test_script.ps1 "first test"
-
     - name: Terraform Fmt
       run: terraform fmt -check
 
