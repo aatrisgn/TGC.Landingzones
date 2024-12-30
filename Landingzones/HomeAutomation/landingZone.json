@@ -6,7 +6,7 @@
             "Name":"Dev",
             "Location":"WestEurope",
             "Type":"DevTst",
-            "ContainerRegistryNeeded":true
+            "ContainerRegistryNeeded":false
         }
     ]
 }
