@@ -8,7 +8,7 @@ variable "Products" {
           Name                    = string
           Type                    = string
           Location                = string
-          ContainerRegistryNeeded = bool
+          ContainerRegistryNeeded = optional(bool, false)
       }))
     })
   )
