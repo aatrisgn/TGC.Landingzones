@@ -5,7 +5,8 @@
         {
             "Name":"Dev",
             "Location":"WestEurope",
-            "Type":"DevTst"
+            "Type":"DevTst",
+            "ContainerRegistryNeeded":true
         }
     ]
 }
