@@ -10,7 +10,7 @@ locals {
         environment_name    = lower(env.Name)
         environment_type    = lower(env.Type)
         location            = lower(env.Location)
-        requires_acr_push   = env.ContainerRegistryNeeded != null ? env.ContainerRegistryNeeded : false 
+        requires_acr_push   = env.ContainerRegistryNeeded != null ? env.ContainerRegistryNeeded : false
       }
     ]
   ])
