@@ -256,7 +256,7 @@ resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
 
-resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
+resource "azurerm_role_assignment" "acr_pull_role_assignment" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
@@ -266,7 +266,7 @@ resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
 
-resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
+resource "azurerm_role_assignment" "acr_push_role_assignment" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
