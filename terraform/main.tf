@@ -60,7 +60,7 @@ locals {
 resource "azurerm_resource_group" "state_file_resource_group" {
   for_each = local.environment_types
 
-  name     = "rg-landingzone-${each.key}-westeurope"
+  name     = "rg-landingzone-shared-${each.key}-westeurope"
   location = "westeurope"
 
   tags = {
