@@ -35,7 +35,8 @@ provider "azurerm" {
 }
 
 locals {
-  environment_types = toset(["prd", "sta", "tst", "dev"])
+  environment_types               = toset(["prd", "sta", "tst", "dev"])
+  container_registry_environments = toset(["dev"]) #Should ideally be the same as for environment_types, but I don't want to pay for it atm.
 
   product_environments = flatten([
     for product in var.Products : [
@@ -49,20 +50,32 @@ locals {
     ]
   ])
 
-  product_capitalization_lookup = { for product in var.Products : lower(product.ProductName) => {
-    product_name = product.ProductName
-  } }
+  product_capitalization_lookup = {
+    for product in var.Products : lower(product.ProductName) => {
+      product_name = product.ProductName
+    }
+  }
 }
 
 resource "azurerm_resource_group" "state_file_resource_group" {
   for_each = local.environment_types
 
-  name     = "rg-statefiles-${each.key}-westeurope"
+  name     = "rg-landingzone-${each.key}-westeurope"
   location = "westeurope"
 
   tags = {
     "provision" = "landingzones"
   }
+}
+
+resource "azurerm_container_registry" "container_registry" {
+  for_each = local.container_registry_environments
+
+  name                = "tgclz${each.key}acr"
+  resource_group_name = azurerm_resource_group.state_file_resource_group[each.key].name
+  location            = azurerm_resource_group.state_file_resource_group[each.key].location
+  sku                 = "Basic"
+  admin_enabled       = false
 }
 
 resource "azurerm_storage_account" "state_file_storage_account" {
@@ -240,5 +253,25 @@ resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
 
   scope                = azurerm_storage_container.state_file_storage_account_container[each.key].resource_manager_id
   role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
+}
+
+resource "azurerm_role_assignment" "acr_pull_role_assignment" {
+  for_each = {
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment
+  }
+
+  scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
+  role_definition_name = "AcrPull"
+  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
+}
+
+resource "azurerm_role_assignment" "acr_push_role_assignment" {
+  for_each = {
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment
+  }
+
+  scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
+  role_definition_name = "AcrPush"
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
