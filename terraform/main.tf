@@ -46,6 +46,7 @@ locals {
         environment_name    = lower(env.Name)
         environment_type    = lower(env.Type)
         location            = lower(env.Location)
+        requires_acr_push   = env.ContainerRegistryNeeded
       }
     ]
   ])
@@ -268,7 +269,7 @@ resource "azurerm_role_assignment" "acr_pull_role_assignment" {
 
 resource "azurerm_role_assignment" "acr_push_role_assignment" {
   for_each = {
-    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.ContainerRegistryNeeded
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.requires_acr_push
   }
 
   scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
