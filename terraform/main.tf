@@ -36,6 +36,7 @@ provider "azurerm" {
 
 locals {
   environment_types = toset(["prd", "sta", "tst", "dev"])
+  container_registry_environments = toset(["dev"]) #Should ideally be the same as for environment_types, but I don't want to pay for it atm.
 
   product_environments = flatten([
     for product in var.Products : [
@@ -49,20 +50,32 @@ locals {
     ]
   ])
 
-  product_capitalization_lookup = { for product in var.Products : lower(product.ProductName) => {
-    product_name = product.ProductName
-  } }
+  product_capitalization_lookup = { 
+      for product in var.Products : lower(product.ProductName) => {
+        product_name = product.ProductName
+    } 
+  }
 }
 
 resource "azurerm_resource_group" "state_file_resource_group" {
   for_each = local.environment_types
 
-  name     = "rg-statefiles-${each.key}-westeurope"
+  name     = "rg-landingzone-${each.key}-westeurope"
   location = "westeurope"
 
   tags = {
     "provision" = "landingzones"
   }
+}
+
+resource "azurerm_container_registry" "acr" {
+  for_each = local.container_registry_environments
+
+  name                = "tgclz${each.key}acr"
+  resource_group_name = azurerm_resource_group.state_file_resource_group[each.key].name
+  location            = azurerm_resource_group.state_file_resource_group[each.key].location
+  sku                 = "Basic"
+  admin_enabled       = false
 }
 
 resource "azurerm_storage_account" "state_file_storage_account" {

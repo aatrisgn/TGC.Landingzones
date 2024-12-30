@@ -5,9 +5,10 @@ variable "Products" {
       ProductName = string
       Environments = list(object(
         {
-          Name     = string
-          Type     = string
-          Location = string
+          Name                    = string
+          Type                    = string
+          Location                = string
+          ContainerRegistryNeeded = bool
       }))
     })
   )
