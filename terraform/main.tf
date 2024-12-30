@@ -261,7 +261,7 @@ resource "azurerm_role_assignment" "acr_pull_role_assignment" {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
 
-  scope                = azurerm_container_registry.container_registry[each.value.environment_name].resource_manager_id
+  scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
   role_definition_name = "AcrPull"
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
@@ -271,7 +271,7 @@ resource "azurerm_role_assignment" "acr_push_role_assignment" {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
 
-  scope                = azurerm_container_registry.container_registry[each.value.environment_name].resource_manager_id
+  scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
   role_definition_name = "AcrPush"
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
