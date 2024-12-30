@@ -68,7 +68,7 @@ resource "azurerm_resource_group" "state_file_resource_group" {
   }
 }
 
-resource "azurerm_container_registry" "acr" {
+resource "azurerm_container_registry" "container_registry" {
   for_each = local.container_registry_environments
 
   name                = "tgclz${each.key}acr"
@@ -253,5 +253,25 @@ resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
 
   scope                = azurerm_storage_container.state_file_storage_account_container[each.key].resource_manager_id
   role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
+}
+
+resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
+  for_each = {
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment
+  }
+
+  scope                = azurerm_container_registry.container_registry[each.value.environment_name].resource_manager_id
+  role_definition_name = "AcrPull"
+  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
+}
+
+resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
+  for_each = {
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment
+  }
+
+  scope                = azurerm_container_registry.container_registry[each.value.environment_name].resource_manager_id
+  role_definition_name = "AcrPush"
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
