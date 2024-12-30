@@ -35,7 +35,7 @@ provider "azurerm" {
 }
 
 locals {
-  environment_types = toset(["prd", "sta", "tst", "dev"])
+  environment_types               = toset(["prd", "sta", "tst", "dev"])
   container_registry_environments = toset(["dev"]) #Should ideally be the same as for environment_types, but I don't want to pay for it atm.
 
   product_environments = flatten([
@@ -50,10 +50,10 @@ locals {
     ]
   ])
 
-  product_capitalization_lookup = { 
-      for product in var.Products : lower(product.ProductName) => {
-        product_name = product.ProductName
-    } 
+  product_capitalization_lookup = {
+    for product in var.Products : lower(product.ProductName) => {
+      product_name = product.ProductName
+    }
   }
 }
 
