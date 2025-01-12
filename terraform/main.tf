@@ -46,7 +46,9 @@ resource "azurerm_resource_group" "state_file_resource_group" {
 }
 
 resource "azurerm_container_registry" "container_registry" {
-  for_each = local.container_registry_environments
+  for_each = {
+    for environment in local.environment_types : environment => environment if environment == "dev"
+  }
 
   name                = "tgclz${each.key}acr"
   resource_group_name = azurerm_resource_group.state_file_resource_group[each.key].name
