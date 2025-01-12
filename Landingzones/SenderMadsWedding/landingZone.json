@@ -1,6 +1,6 @@
 {
     "$schema": "../Schemas/landingZoneSchema.json",
-    "ProductName":"HomeAutomation",
+    "ProductName":"SenderMadsWedding",
     "Environments":[
         {
             "Name":"Dev",
