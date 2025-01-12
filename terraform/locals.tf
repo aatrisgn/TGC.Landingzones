@@ -1,5 +1,5 @@
 locals {
-  environment_types               = toset(["prd", "sta", "tst", "dev"])
+  environment_types = toset(["prd", "sta", "tst", "dev"])
 
   product_environments = flatten([
     for product in var.Products : [
