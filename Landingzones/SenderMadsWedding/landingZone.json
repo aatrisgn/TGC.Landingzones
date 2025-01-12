@@ -1,0 +1,18 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName":"SenderMadsWedding",
+    "Environments":[
+        {
+            "Name":"Dev",
+            "Location":"WestEurope",
+            "Type":"DevTst",
+            "ContainerRegistryNeeded":false
+        },
+        {
+            "Name":"Prd",
+            "Location":"WestEurope",
+            "Type":"StaPrd",
+            "ContainerRegistryNeeded":false
+        }
+    ]
+}

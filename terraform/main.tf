@@ -46,7 +46,9 @@ resource "azurerm_resource_group" "state_file_resource_group" {
 }
 
 resource "azurerm_container_registry" "container_registry" {
-  for_each = local.container_registry_environments
+  for_each = {
+    for environment in local.environment_types : environment => environment if environment == "dev"
+  }
 
   name                = "tgclz${each.key}acr"
   resource_group_name = azurerm_resource_group.state_file_resource_group[each.key].name
@@ -238,7 +240,7 @@ resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
 
 resource "azurerm_role_assignment" "acr_pull_role_assignment" {
   for_each = {
-    for product_environment in local.product_environments : product_environment.product_environment => product_environment
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.environment_name == "dev"
   }
 
   scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
