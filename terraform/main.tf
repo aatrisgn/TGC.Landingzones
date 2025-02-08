@@ -143,7 +143,7 @@ resource "azuread_directory_role_assignment" "example" {
   }
 
   role_id             = azuread_directory_role.application_developer_role.object_id
-  principal_object_id = azuread_application.product_environment_app_regs[each.key].object_id
+  principal_object_id = azuread_service_principal.product_environment_spns[each.key].object_id
 }
 
 resource "azuread_application_federated_identity_credential" "spn_federated_identity" {
