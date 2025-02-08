@@ -142,7 +142,7 @@ resource "azuread_directory_role_assignment" "example" {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.requires_application_developer_role
   }
 
-  role_id             = azuread_directory_role.application_developer_role.template_id
+  role_id             = azuread_directory_role.application_developer_role.object_id
   principal_object_id = azuread_application.product_environment_app_regs[each.key].object_id
 }
 
