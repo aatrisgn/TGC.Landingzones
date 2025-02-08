@@ -133,6 +133,19 @@ resource "azuread_application" "product_environment_app_regs" {
   display_name = lower("tgc-${each.key}-spn")
 }
 
+resource "azuread_directory_role" "application_developer_role" {
+  display_name = "Application Developer"
+}
+
+resource "azuread_directory_role_assignment" "example" {
+  for_each = {
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.requires_application_developer_role
+  }
+
+  role_id             = azuread_directory_role.application_developer_role.template_id
+  principal_object_id = azuread_application.product_environment_app_regs[each.key].object_id
+}
+
 resource "azuread_application_federated_identity_credential" "spn_federated_identity" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment

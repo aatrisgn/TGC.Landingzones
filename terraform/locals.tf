@@ -4,13 +4,14 @@ locals {
   product_environments = flatten([
     for product in var.Products : [
       for env in product.Environments : {
-        product_environment     = lower("${product.ProductName}-${env.Name}")
-        product_name            = lower(product.ProductName)
-        product_name_camel_case = lower(product.ProductName)
-        environment_name        = lower(env.Name)
-        environment_type        = lower(env.Type)
-        location                = lower(env.Location)
-        requires_acr_push       = env.ContainerRegistryNeeded
+        product_environment                 = lower("${product.ProductName}-${env.Name}")
+        product_name                        = lower(product.ProductName)
+        product_name_camel_case             = lower(product.ProductName)
+        environment_name                    = lower(env.Name)
+        environment_type                    = lower(env.Type)
+        location                            = lower(env.Location)
+        requires_acr_push                   = env.ContainerRegistryNeeded
+        requires_application_developer_role = env.ApplicationDeveloperRoleNeeded
       }
     ]
   ])

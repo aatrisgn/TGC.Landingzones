@@ -9,6 +9,7 @@ variable "Products" {
           Type                    = string
           Location                = string
           ContainerRegistryNeeded = optional(bool, false)
+          ApplicationDeveloperRoleNeeded = optional(bool, false)
       }))
     })
   )
