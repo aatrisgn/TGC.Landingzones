@@ -5,10 +5,10 @@ variable "Products" {
       ProductName = string
       Environments = list(object(
         {
-          Name                    = string
-          Type                    = string
-          Location                = string
-          ContainerRegistryNeeded = optional(bool, false)
+          Name                           = string
+          Type                           = string
+          Location                       = string
+          ContainerRegistryNeeded        = optional(bool, false)
           ApplicationDeveloperRoleNeeded = optional(bool, false)
       }))
     })
