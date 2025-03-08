@@ -134,7 +134,7 @@ resource "azuread_application" "product_environment_app_regs" {
 }
 
 resource "azuread_directory_role" "application_developer_role" {
-  display_name = "Application Developer"
+  display_name = "Application Administrator"
 }
 
 resource "azuread_directory_role_assignment" "example" {
