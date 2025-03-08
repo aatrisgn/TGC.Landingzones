@@ -134,7 +134,7 @@ resource "azuread_application" "product_environment_app_regs" {
 }
 
 resource "azuread_directory_role" "application_developer_role" {
-  display_name = "Application Developer"
+  display_name = "Application Administrator"
 }
 
 resource "azuread_directory_role_assignment" "example" {
@@ -218,14 +218,14 @@ resource "github_actions_secret" "secret_storage_container_name" {
   plaintext_value = azurerm_storage_container.state_file_storage_account_container[each.value.product_environment].name
 }
 
-resource "github_actions_secret" "secret_resource_group_name" { #MF
+resource "github_actions_secret" "secret_resource_group_name" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
 
   repository      = github_repository.product_repository[local.product_capitalization_lookup[each.value.product_name].product_name].name
   secret_name     = "${replace(each.key, "-", "_")}_tfstate_resource_group_name"
-  plaintext_value = azurerm_resource_group.state_file_resource_group[each.value.product_environment].name
+  plaintext_value = azurerm_resource_group.state_file_resource_group[lower(each.value.environment_type)].name
 }
 
 resource "github_actions_secret" "secret_client_id" {
