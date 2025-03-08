@@ -5,13 +5,13 @@
         {
             "Name":"Dev",
             "Location":"WestEurope",
-            "Type":"DevTst",
+            "Type":"Dev",
             "ContainerRegistryNeeded":false
         },
         {
             "Name":"Prd",
             "Location":"WestEurope",
-            "Type":"StaPrd",
+            "Type":"Prd",
             "ContainerRegistryNeeded":false
         }
     ]
