@@ -1,0 +1,13 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName": "StockGame",
+    "Environments": [
+        {
+            "Name": "Dev",
+            "Location": "WestEurope",
+            "Type": "Dev",
+            "ContainerRegistryNeeded": true,
+            "ApplicationDeveloperRoleNeeded": true
+        }
+    ]
+}
