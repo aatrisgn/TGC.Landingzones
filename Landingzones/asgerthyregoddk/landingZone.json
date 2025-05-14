@@ -1,0 +1,13 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName": "AsgerThyregoddk",
+    "Environments": [
+        {
+            "Name": "Dev",
+            "Location": "WestEurope",
+            "Type": "Dev",
+            "ContainerRegistryNeeded": false,
+            "ApplicationDeveloperRoleNeeded": false
+        }
+    ]
+}
