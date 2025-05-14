@@ -8,6 +8,13 @@
             "Type": "Dev",
             "ContainerRegistryNeeded": false,
             "ApplicationDeveloperRoleNeeded": false
+        },
+        {
+            "Name":"Prd",
+            "Location":"WestEurope",
+            "Type":"Prd",
+            "ContainerRegistryNeeded":false,
+            "ApplicationDeveloperRoleNeeded": false
         }
     ]
 }
