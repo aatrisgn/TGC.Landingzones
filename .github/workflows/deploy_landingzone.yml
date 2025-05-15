@@ -28,7 +28,7 @@ jobs:
     environment: prd
     defaults:
       run:
-        working-directory: ./terraform
+        working-directory: ./terraform/landingzone
     
     env:
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
