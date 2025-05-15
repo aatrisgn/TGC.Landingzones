@@ -48,7 +48,7 @@ resource "azurerm_dns_zone" "childzone" {
 resource "azurerm_dns_ns_record" "child_ns" {
   for_each            = azurerm_dns_zone.childzone
   name                = split(".", each.key)[0]
-  zone_name           = split(".", each.key)[1] + split(".", each.key)[2]
+  zone_name           = "${split(".", each.key)[1]}.${split(".", each.key)[2]}"
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
   records             = azurerm_dns_zone.childzone[each.key].name_servers
   ttl                 = 300
