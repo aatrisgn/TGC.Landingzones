@@ -17,12 +17,6 @@ provider "azurerm" {
   features {}
 }
 
-# Define child zones corresponding to each parent
-variable "child_zones" {
-  type    = list(string)
-  default = ["child1.example1.com", "child2.example2.com"]
-}
-
 resource "azurerm_resource_group" "state_file_resource_group" {
 
   name     = "rg-dnszones-shared-${var.environment}-westeurope"
