@@ -1,11 +1,11 @@
-name: Deploy Landing Zones
+name: Deploy DNS Zones
 
 on:
   push:
     branches: ["main"]
     paths:
-        - "terraform/landingzone/*"
-        - ".github/workflows/deploy_landingzone.yml"
+        - "terraform/dnszones/*"
+        - ".github/workflows/deploy_dnszones.yml"
   pull_request:
     branches: ["main"]
   workflow_dispatch:
@@ -21,17 +21,14 @@ permissions:
   contents: read
   pull-requests: write
 
-env:
-  LANDING_ZONE_FILE_NAME: "landingzone.json"
-
 jobs:
-  plan_landingzones:
-    name: "Plan landingzone deployment"
+  plan_dns_zones:
+    name: "Plan DNS Zone deployment"
     runs-on: ubuntu-latest
     environment: prd
     defaults:
       run:
-        working-directory: ./terraform/landingzone
+        working-directory: ./terraform/dnszones
     
     env:
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
@@ -43,15 +40,10 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install Terraform
-      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh" 
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
 
     - name: Terraform Fmt
       run: terraform fmt -check
-
-    - name: Generate landingzone var file
-      shell: pwsh
-      run: |
-        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/landingzone/${{ env.LANDING_ZONE_FILE_NAME }}"
 
     - name: Terraform Init
       run: |
@@ -59,24 +51,24 @@ jobs:
         -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
         -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
         -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
-        -backend-config=key="landingzone.prd.tfstate"
+        -backend-config=key="dnszone.prd.tfstate"
         
     - name: Terraform Validate
       run: terraform validate
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}"
+      run: terraform plan -input=false -var-file=envs/prd.tfvars
 
-  deploy_landingzones:
+  deploy_dns_zones:
     runs-on: ubuntu-latest
     environment: prd
-    name: "Apply landingzone deployment"
-    needs: plan_landingzones
+    name: "Apply dns zone deployment"
+    needs: plan_dns_zones
     if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
     defaults:
       run:
-        working-directory: ./terraform/landingzone
+        working-directory: ./terraform/dnszones
     
     env:
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
@@ -90,11 +82,6 @@ jobs:
 
     - name: Install Terraform
       run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
-    
-    - name: Generate landingzone var file
-      shell: pwsh
-      run: |
-        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/${{ env.LANDING_ZONE_FILE_NAME }}"
 
     - name: Terraform Init
       run: |
@@ -102,15 +89,14 @@ jobs:
         -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
         -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
         -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
-        -backend-config=key="landingzone.prd.tfstate"
+        -backend-config=key="dnszones.prd.tfstate"
         
     - name: Terraform Validate
       run: terraform validate
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}" -out=tfplan
+      run: terraform plan -input=false -var-file=envs/prd.tfvars -out=tfplan
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
-    
