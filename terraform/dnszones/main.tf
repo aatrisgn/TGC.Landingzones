@@ -24,14 +24,14 @@ resource "azurerm_dns_zone" "parent" {
 # Create Child DNS Zones
 resource "azurerm_dns_zone" "childzone" {
   for_each            = local.child_dnszones
-  name                = "${each.value}"
+  name                = each.value
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
 }
 
 # Create NS Records in Parent Zones pointing to Child Zones
 resource "azurerm_dns_ns_record" "child_ns" {
   for_each            = azurerm_dns_zone.childzone
-  name                = each.key # Use the child zone name
+  name                = each.key                # Use the child zone name
   zone_name           = split(".", each.key)[1] # Extract parent zone name
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
   records             = azurerm_dns_zone.childzone[each.key].name_servers
