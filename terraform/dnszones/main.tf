@@ -38,7 +38,7 @@ resource "azurerm_dns_zone" "root_dns_zone" {
   name                = each.value
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
 
-#We are hosting our domains in Azure and are therefore pointing manually to these DNS Servers for Name Servers in Simply.
+  #We are hosting our domains in Azure and are therefore pointing manually to these DNS Servers for Name Servers in Simply.
   lifecycle {
     prevent_destroy = true
   }
