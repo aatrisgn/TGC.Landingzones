@@ -37,6 +37,11 @@ resource "azurerm_dns_zone" "root_dns_zone" {
   for_each            = toset(var.root_domains)
   name                = each.value
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
+
+#We are hosting our domains in Azure and are therefore pointing manually to these DNS Servers for Name Servers in Simply.
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "azurerm_dns_zone" "childzone" {

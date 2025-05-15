@@ -76,7 +76,7 @@ jobs:
     if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
     defaults:
       run:
-        working-directory: ./terraform
+        working-directory: ./terraform/landingzone
     
     env:
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"

@@ -22,7 +22,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  plan_landingzones:
+  plan_dns_zones:
     name: "Plan DNS Zone deployment"
     runs-on: ubuntu-latest
     environment: prd
@@ -52,6 +52,44 @@ jobs:
         -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
         -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
         -backend-config=key="dnszone.prd.tfstate"
+        
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -input=false -var-file=envs/prd.tfvars
+
+  deploy_dns_zones:
+    runs-on: ubuntu-latest
+    environment: prd
+    name: "Apply dns zone deployment"
+    needs: plan_dns_zones
+    if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
+    defaults:
+      run:
+        working-directory: ./terraform/dnszones
+    
+    env:
+      ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+      ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+      ARM_USE_AZUREAD: true
+      GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Terraform
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+        -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
+        -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
+        -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
+        -backend-config=key="dnszones.prd.tfstate"
         
     - name: Terraform Validate
       run: terraform validate
