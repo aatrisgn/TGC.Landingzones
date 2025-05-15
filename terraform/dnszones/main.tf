@@ -49,9 +49,9 @@ resource "azurerm_dns_zone" "childzone" {
 
 # Create NS Records in Parent Zones pointing to Child Zones
 resource "azurerm_dns_ns_record" "child_ns" {
-  for_each            = toset(azurerm_dns_zone.childzone)
-  name                = each.key                # Use the child zone name
-  zone_name           = split(".", each.key)[1] # Extract parent zone name
+  for_each            = azurerm_dns_zone.childzone
+  name                = each.key
+  zone_name           = split(".", each.key)[1]
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
   records             = azurerm_dns_zone.childzone[each.key].name_servers
   ttl                 = 300
