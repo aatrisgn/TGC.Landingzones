@@ -12,6 +12,11 @@ terraform {
   }
 }
 
+provider "azurerm" {
+  use_oidc = true
+  features {}
+}
+
 # Define child zones corresponding to each parent
 variable "child_zones" {
   type    = list(string)
