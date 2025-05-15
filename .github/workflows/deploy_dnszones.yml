@@ -54,8 +54,8 @@ jobs:
         -backend-config=key="dnszone.prd.tfstate"
         
     - name: Terraform Validate
-      run: terraform validate
+      run: terraform validate -var-file=envs/prd.tfvars
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false
+      run: terraform plan -input=false -var-file=envs/prd.tfvars
