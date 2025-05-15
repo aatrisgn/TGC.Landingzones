@@ -1,7 +1,7 @@
 locals {
   child_dnszones = flatten([
-    for item1 in var.var.root_domains : [
-      for item2 in var.var.childzone_environments : "${item1}.${item2}"
+    for root_domain in var.root_domains : [
+      for childzone in var.childzone_environments : "${childzone}.${root_domain}"
     ]
   ])
 }
