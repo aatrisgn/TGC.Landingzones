@@ -23,12 +23,12 @@ permissions:
 
 jobs:
   plan_landingzones:
-    name: "Plan landingzone deployment"
+    name: "Plan DNS Zone deployment"
     runs-on: ubuntu-latest
     environment: prd
     defaults:
       run:
-        working-directory: ./terraform/landingzone
+        working-directory: ./terraform/dnszones
     
     env:
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
