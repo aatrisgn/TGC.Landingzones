@@ -42,7 +42,7 @@ resource "azurerm_dns_zone" "parent" {
 
 # Create Child DNS Zones
 resource "azurerm_dns_zone" "childzone" {
-  for_each            = local.child_dnszones
+  for_each            = toset(local.child_dnszones)
   name                = each.value
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
 }
