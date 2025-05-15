@@ -58,4 +58,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=envs/prd.tfvars
+      run: terraform plan -input=false -var-file=envs/prd.tfvars -out=tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan

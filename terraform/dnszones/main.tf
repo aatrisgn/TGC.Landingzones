@@ -33,21 +33,18 @@ resource "azurerm_resource_group" "state_file_resource_group" {
   }
 }
 
-# Create DNS Zones
-resource "azurerm_dns_zone" "parent" {
+resource "azurerm_dns_zone" "root_dns_zone" {
   for_each            = toset(var.root_domains)
   name                = each.value
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
 }
 
-# Create Child DNS Zones
 resource "azurerm_dns_zone" "childzone" {
   for_each            = toset(local.child_dnszones)
   name                = each.value
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
 }
 
-# Create NS Records in Parent Zones pointing to Child Zones
 resource "azurerm_dns_ns_record" "child_ns" {
   for_each            = azurerm_dns_zone.childzone
   name                = each.key
