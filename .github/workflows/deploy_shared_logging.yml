@@ -25,7 +25,7 @@ env:
   COMPONENT_NAME: "logging"
 
 jobs:
-  plan_logging_zones:
+  plan_logging_zones_dev:
     name: "Plan logging deployment"
     runs-on: ubuntu-latest
     environment: dev
@@ -63,12 +63,93 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: terraform plan -input=false -var-file=envs/${{ env.ENV_NAME }}.tfvars
+  
+  plan_logging_zones_prd:
+    name: "Plan logging deployment"
+    runs-on: ubuntu-latest
+    environment: prd
+    defaults:
+      run:
+        working-directory: ./terraform/logging
+    
+    env:
+      ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+      ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+      ARM_USE_AZUREAD: true
+      ENV_NAME: "prd"
 
-  deploy_logging_zones:
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Terraform
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
+
+    - name: Terraform Fmt
+      run: terraform fmt -check
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+        -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
+        -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
+        -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
+        -backend-config=key="${{ env.COMPONENT_NAME }}.${{ env.ENV_NAME }}.tfstate"
+        
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -input=false -var-file=envs/${{ env.ENV_NAME }}.tfvars
+
+  deploy_logging_zones_dev:
     runs-on: ubuntu-latest
     environment: dev
     name: "Apply logging deployment"
-    needs: plan_logging_zones
+    needs: plan_logging_zones_dev
+    if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
+    defaults:
+      run:
+        working-directory: ./terraform/logging
+    
+    env:
+      ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+      ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+      ARM_USE_AZUREAD: true
+      GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
+      ENV_NAME: "dev"
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Terraform
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+        -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
+        -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
+        -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
+        -backend-config=key="${{ env.COMPONENT_NAME }}.${{ env.ENV_NAME }}.tfstate"
+        
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -input=false -var-file=envs/${{ env.ENV_NAME }}.tfvars -out=tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+  
+  deploy_logging_zones_prd:
+    runs-on: ubuntu-latest
+    environment: prd
+    name: "Apply logging deployment"
+    needs: [plan_logging_zones_prd, deploy_logging_zones_dev]
     if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
     defaults:
       run:
