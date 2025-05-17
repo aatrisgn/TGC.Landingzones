@@ -23,3 +23,11 @@ variable "tenant_id" {
     error_message = "The variable value must be a valid GUID in the format 00000000-0000-0000-0000-000000000000."
   }
 }
+
+variable "shared_log_analytic_workspace" {
+  description = "Object refering existing shared log analytic workspace by resource group and name"
+  type = object({
+    name                = string
+    resource_group_name = string
+  })
+}

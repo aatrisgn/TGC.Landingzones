@@ -174,6 +174,14 @@ resource "azurerm_role_assignment" "product_environment_owner" {
   principal_id         = each.value.object_id
 }
 
+resource "azurerm_role_assignment" "product_environment_owner" {
+  for_each = azuread_service_principal.product_environment_spns
+
+  scope                = data.azurerm_log_analytics_workspace.shared_log_analytic_workspace.id
+  role_definition_name = "Log Analytics Contributor"
+  principal_id         = each.value.object_id
+}
+
 resource "github_actions_secret" "secret_subscription_id" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
