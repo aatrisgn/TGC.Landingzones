@@ -26,7 +26,7 @@ env:
 
 jobs:
   plan_logging_zones_dev:
-    name: "Plan logging deployment"
+    name: "DEV: Plan logging deployment"
     runs-on: ubuntu-latest
     environment: dev
     defaults:
@@ -65,7 +65,7 @@ jobs:
       run: terraform plan -input=false -var-file=envs/${{ env.ENV_NAME }}.tfvars
   
   plan_logging_zones_prd:
-    name: "Plan logging deployment"
+    name: "PRD: Plan logging deployment"
     runs-on: ubuntu-latest
     environment: prd
     defaults:
@@ -106,7 +106,7 @@ jobs:
   deploy_logging_zones_dev:
     runs-on: ubuntu-latest
     environment: dev
-    name: "Apply logging deployment"
+    name: "DEV: Apply logging deployment"
     needs: plan_logging_zones_dev
     if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
     defaults:
@@ -148,7 +148,7 @@ jobs:
   deploy_logging_zones_prd:
     runs-on: ubuntu-latest
     environment: prd
-    name: "Apply logging deployment"
+    name: "PRD: Apply logging deployment"
     needs: [plan_logging_zones_prd, deploy_logging_zones_dev]
     if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
     defaults:
