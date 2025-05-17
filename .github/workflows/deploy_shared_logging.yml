@@ -26,12 +26,12 @@ env:
 
 jobs:
   plan_logging_zones:
-    name: "Plan $COMPONENT_NAME deployment"
+    name: "Plan logging deployment"
     runs-on: ubuntu-latest
     environment: dev
     defaults:
       run:
-        working-directory: ./terraform/$COMPONENT_NAME
+        working-directory: ./terraform/logging
     
     env:
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
@@ -54,24 +54,24 @@ jobs:
         -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
         -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
         -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
-        -backend-config=key="$COMPONENT_NAME.prd.tfstate"
+        -backend-config=key="${{ env.COMPONENT_NAME }}.$ENV_NAME.tfstate"
         
     - name: Terraform Validate
       run: terraform validate
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=envs/prd.tfvars
+      run: terraform plan -input=false -var-file=envs/$ENV_NAME.tfvars
 
   deploy_logging_zones:
     runs-on: ubuntu-latest
-    environment: prd
-    name: "Apply $COMPONENT_NAME deployment"
+    environment: dev
+    name: "Apply logging deployment"
     needs: plan_logging_zones
     if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
     defaults:
       run:
-        working-directory: ./terraform/$COMPONENT_NAME
+        working-directory: ./terraform/logging
     
     env:
       ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
@@ -92,14 +92,14 @@ jobs:
         -backend-config=resource_group_name="${{ secrets.BACKEND_AZURE_RESOURCE_GROUP_NAME }}" \
         -backend-config=storage_account_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_NAME }}" \
         -backend-config=container_name="${{ secrets.BACKEND_AZURE_STORAGE_ACCOUNT_CONTAINER_NAME }}" \
-        -backend-config=key="$COMPONENT_NAME.prd.tfstate"
+        -backend-config=key="${{ env.COMPONENT_NAME }}.$ENV_NAME.tfstate"
         
     - name: Terraform Validate
       run: terraform validate
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=envs/prd.tfvars -out=tfplan
+      run: terraform plan -input=false -var-file=envs/$ENV_NAME.tfvars -out=tfplan
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
