@@ -1,5 +1,5 @@
 {
-    "$schema": "../Schemas/landingZoneSchema.json",
+    "$schema": "../../Schemas/landingZoneSchema.json",
     "ProductName": "AsgerThyregoddk",
     "Environments": [
         {
@@ -7,14 +7,24 @@
             "Location": "WestEurope",
             "Type": "Dev",
             "ContainerRegistryNeeded": false,
-            "ApplicationDeveloperRoleNeeded": false
+            "ApplicationDeveloperRoleNeeded": false,
+            "ChildzoneNS": {
+                "RootDomain":"dev.asgerthyregod.dk",
+                "ChildzoneName":"cv",
+                "NameServers":["ns1", "ns2", "ns3", "ns4"]
+            }
         },
         {
             "Name":"Prd",
             "Location":"WestEurope",
             "Type":"Prd",
             "ContainerRegistryNeeded":false,
-            "ApplicationDeveloperRoleNeeded": false
+            "ApplicationDeveloperRoleNeeded": false,
+            "ChildzoneNS": {
+                "RootDomain":"asgerthyregod.dk",
+                "ChildzoneName":"cv",
+                "NameServers":["ns1", "ns2", "ns3", "ns4"]
+            }
         }
     ]
 }
