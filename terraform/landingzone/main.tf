@@ -174,7 +174,7 @@ resource "azurerm_role_assignment" "product_environment_owner" {
   principal_id         = each.value.object_id
 }
 
-resource "azurerm_role_assignment" "product_environment_owner" {
+resource "azurerm_role_assignment" "shared_log_analytic_workspace_contributor" {
   for_each = azuread_service_principal.product_environment_spns
 
   scope                = data.azurerm_log_analytics_workspace.shared_log_analytic_workspace.id
