@@ -137,7 +137,7 @@ resource "azuread_directory_role" "application_developer_role" {
   display_name = "Application Administrator"
 }
 
-resource "azuread_directory_role_assignment" "example" {
+resource "azuread_directory_role_assignment" "application_developer_role_assignment" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.requires_application_developer_role
   }
@@ -171,6 +171,14 @@ resource "azurerm_role_assignment" "product_environment_owner" {
 
   scope                = azurerm_resource_group.product_environment_group[each.key].id
   role_definition_name = "Owner"
+  principal_id         = each.value.object_id
+}
+
+resource "azurerm_role_assignment" "shared_log_analytic_workspace_contributor" {
+  for_each = azuread_service_principal.product_environment_spns
+
+  scope                = data.azurerm_log_analytics_workspace.shared_log_analytic_workspace.id
+  role_definition_name = "Log Analytics Contributor"
   principal_id         = each.value.object_id
 }
 
