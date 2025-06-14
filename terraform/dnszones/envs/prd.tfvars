@@ -1,3 +1,3 @@
-root_domains  = ["asgerthyregod.dk", "tgcportal.com", "streetcroquet.com", "streetcroquet.dk"]
+root_domains  = ["asgerthyregod.dk", "tgcportal.com"]
 childzone_environments  = ["dev"]
 environment   = "prd"
