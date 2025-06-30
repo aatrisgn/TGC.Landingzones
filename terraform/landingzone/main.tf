@@ -183,17 +183,19 @@ resource "azurerm_role_assignment" "shared_dev_log_analytic_workspace_contributo
     for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "dev")
   }
 
-  scope                = data.azurerm_log_analytics_workspace.shared_dev_log_analytic_workspace
+  scope                = data.azurerm_log_analytics_workspace.shared_dev_log_analytic_workspace.id
   role_definition_name = "Log Analytics Contributor"
-  principal_id         = each.value.object_id
+  principal_id         = each.value
 }
 
 resource "azurerm_role_assignment" "shared_prd_log_analytic_workspace_contributor" {
-  for_each = azuread_service_principal.product_environment_spns
+  for_each = {
+    for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "prd")
+  }
 
   scope                = data.azurerm_log_analytics_workspace.shared_prd_log_analytic_workspace.id
   role_definition_name = "Log Analytics Contributor"
-  principal_id         = each.value.object_id
+  principal_id         = each.value
 }
 
 resource "github_actions_secret" "secret_subscription_id" {
