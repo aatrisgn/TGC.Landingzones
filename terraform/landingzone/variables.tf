@@ -24,7 +24,15 @@ variable "tenant_id" {
   }
 }
 
-variable "shared_log_analytic_workspace" {
+variable "shared_prd_log_analytic_workspace" {
+  description = "Object refering existing shared log analytic workspace by resource group and name"
+  type = object({
+    name                = string
+    resource_group_name = string
+  })
+}
+
+variable "shared_dev_log_analytic_workspace" {
   description = "Object refering existing shared log analytic workspace by resource group and name"
   type = object({
     name                = string
