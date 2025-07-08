@@ -39,6 +39,7 @@ jobs:
       ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
       ARM_USE_AZUREAD: true
       ENV_NAME: "prd"
+      GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
 
     steps:
     - uses: actions/checkout@v3
