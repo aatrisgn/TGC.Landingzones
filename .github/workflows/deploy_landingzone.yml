@@ -40,7 +40,6 @@ jobs:
       ARM_USE_AZUREAD: true
       ENV_NAME: "prd"
       GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
-      #TF_LOG: INFO
 
     steps:
     - uses: actions/checkout@v3
