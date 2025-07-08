@@ -21,7 +21,9 @@ terraform {
 }
 
 # Configure the GitHub Provider
-provider "github" {}
+provider "github" {
+  owner = "aatrisgn"
+}
 
 # Configure the Azure Active Directory Provider
 provider "azuread" {
