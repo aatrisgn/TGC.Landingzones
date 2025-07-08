@@ -139,10 +139,6 @@ resource "azurerm_role_assignment" "product_environment_owner" {
 }
 
 resource "azurerm_role_assignment" "shared_dev_log_analytic_workspace_contributor" {
-  # for_each = {
-  #  for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.environment_name == "dev"
-  #}
-  #for_each = azuread_service_principal.product_environment_spns
   for_each = {
     for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "dev")
   }
