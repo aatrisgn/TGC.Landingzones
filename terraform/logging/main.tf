@@ -6,11 +6,6 @@ resource "azurerm_resource_group" "state_file_resource_group" {
   tags = {
     "provision" = "landingzones"
   }
-
-  //Added during migration phase
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "azurerm_log_analytics_workspace" "shared_log_analytic_workspace" {
@@ -23,10 +18,5 @@ resource "azurerm_log_analytics_workspace" "shared_log_analytic_workspace" {
 
   tags = {
     "provision" = "landingzones"
-  }
-
-  //Added during migration phase
-  lifecycle {
-    prevent_destroy = true
   }
 }
