@@ -8,13 +8,15 @@ provider "azuread" {
   tenant_id = var.tenant_id
 }
 
-provider "azurerm_old" {
+provider "azurerm" {
+  alias = "old"
   use_oidc        = true
   subscription_id = var.old_subscription_id
   features {}
 }
 
-provider "azurerm_new" {
+provider "azurerm" {
+  alias = "new"
   use_oidc        = true
   subscription_id = var.new_subscription_id
   features {}

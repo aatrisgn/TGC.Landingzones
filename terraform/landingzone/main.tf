@@ -1,4 +1,5 @@
 resource "azurerm_resource_group" "state_file_resource_group" {
+  provider = azurerm.old
   for_each = local.environment_types
 
   name     = "rg-landingzone-shared-${each.key}-westeurope"
@@ -10,6 +11,7 @@ resource "azurerm_resource_group" "state_file_resource_group" {
 }
 
 resource "azurerm_container_registry" "container_registry" {
+  provider = azurerm.old
   for_each = {
     for environment in local.environment_types : environment => environment if environment == "dev"
   }
@@ -22,6 +24,7 @@ resource "azurerm_container_registry" "container_registry" {
 }
 
 resource "azurerm_storage_account" "state_file_storage_account" {
+  provider = azurerm.old
   for_each = local.environment_types
 
   name = "tgcststate${each.key}"
@@ -38,6 +41,7 @@ resource "azurerm_storage_account" "state_file_storage_account" {
 }
 
 resource "azurerm_storage_container" "state_file_storage_account_container" {
+  provider = azurerm.old
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
@@ -77,6 +81,7 @@ resource "github_repository_environment" "product_repository_environments" {
 }
 
 resource "azurerm_resource_group" "product_environment_group" {
+  provider = azurerm.old
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
@@ -131,6 +136,7 @@ resource "azuread_service_principal" "product_environment_spns" {
 }
 
 resource "azurerm_role_assignment" "product_environment_owner" {
+  provider = azurerm.old
   for_each = azuread_service_principal.product_environment_spns
 
   scope                = azurerm_resource_group.product_environment_group[each.key].id
@@ -139,6 +145,7 @@ resource "azurerm_role_assignment" "product_environment_owner" {
 }
 
 resource "azurerm_role_assignment" "shared_dev_log_analytic_workspace_contributor" {
+  provider = azurerm.new
   for_each = {
     for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "dev")
   }
@@ -149,6 +156,7 @@ resource "azurerm_role_assignment" "shared_dev_log_analytic_workspace_contributo
 }
 
 resource "azurerm_role_assignment" "shared_prd_log_analytic_workspace_contributor" {
+  provider = azurerm.new
   for_each = {
     for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "prd")
   }
@@ -226,6 +234,8 @@ resource "github_actions_secret" "secret_client_id" {
 }
 
 resource "azurerm_role_assignment" "state_storage_account_role_assignment" {
+  provider = azurerm.old
+
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
@@ -236,6 +246,8 @@ resource "azurerm_role_assignment" "state_storage_account_role_assignment" {
 }
 
 resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
+  provider = azurerm.old
+
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
@@ -246,6 +258,8 @@ resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
 }
 
 resource "azurerm_role_assignment" "acr_pull_role_assignment" {
+  provider = azurerm.old
+
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.environment_name == "dev"
   }
@@ -256,6 +270,8 @@ resource "azurerm_role_assignment" "acr_pull_role_assignment" {
 }
 
 resource "azurerm_role_assignment" "acr_push_role_assignment" {
+  provider = azurerm.old
+  
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.requires_acr_push
   }
