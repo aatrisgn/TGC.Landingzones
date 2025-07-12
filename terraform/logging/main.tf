@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "state_file_resource_group" {
-  provider = azurerm_new
+  provider = azurerm.new
   name     = "rg-logging-shared-${var.environment}-westeurope"
   location = "westeurope"
 
@@ -14,7 +14,7 @@ resource "azurerm_resource_group" "state_file_resource_group" {
 }
 
 resource "azurerm_log_analytics_workspace" "shared_log_analytic_workspace" {
-  provider            = azurerm_new
+  provider            = azurerm.new
   name                = "law-logging-shared-${var.environment}-westeurope"
   resource_group_name = azurerm_resource_group.state_file_resource_group.name
   location            = azurerm_resource_group.state_file_resource_group.location
