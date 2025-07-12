@@ -65,7 +65,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=envs/${{ env.ENV_NAME }}.tfvars
+      run: terraform plan -input=false -var-file=envs/${{ env.ENV_NAME }}.tfvars -var="old_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="new_subscription_id=${{ secrets.PLATFORM_AZURE_SUBSCRIPTION_ID }}"
   
   plan_logging_zones_prd:
     name: "PRD: Plan logging deployment"
@@ -104,7 +104,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=envs/${{ env.ENV_NAME }}.tfvars  -var="old_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="new_subscription_id=${{ secrets.PLATFORM_AZURE_SUBSCRIPTION_ID }}"
+      run: terraform plan -input=false -var-file=envs/${{ env.ENV_NAME }}.tfvars -var="old_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="new_subscription_id=${{ secrets.PLATFORM_AZURE_SUBSCRIPTION_ID }}"
 
   deploy_logging_zones_dev:
     runs-on: ubuntu-latest
