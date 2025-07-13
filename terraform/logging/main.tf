@@ -1,24 +1,4 @@
-terraform {
-  backend "azurerm" {
-    use_azuread_auth = true
-    use_oidc         = true
-  }
-
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=4.0.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  use_oidc = true
-  features {}
-}
-
 resource "azurerm_resource_group" "state_file_resource_group" {
-
   name     = "rg-logging-shared-${var.environment}-westeurope"
   location = "westeurope"
 
