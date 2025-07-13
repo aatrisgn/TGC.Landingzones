@@ -16,7 +16,7 @@ resource "azurerm_resource_group" "state_file_resource_group" {
 }
 
 resource "azurerm_container_registry" "container_registry" {
-  provider = azurerm.old
+  provider = azurerm.new
 
   for_each = {
     for environment in local.environment_types : environment => environment if environment == "dev"
@@ -30,7 +30,7 @@ resource "azurerm_container_registry" "container_registry" {
 }
 
 resource "azurerm_storage_account" "state_file_storage_account" {
-  provider = azurerm.old
+  provider = azurerm.new
 
   for_each = local.environment_types
 
@@ -48,7 +48,7 @@ resource "azurerm_storage_account" "state_file_storage_account" {
 }
 
 resource "azurerm_storage_container" "state_file_storage_account_container" {
-  provider = azurerm.old
+  provider = azurerm.new
 
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
