@@ -9,14 +9,14 @@ provider "azuread" {
 }
 
 provider "azurerm" {
-  alias = "old"
+  alias           = "old"
   use_oidc        = true
   subscription_id = var.old_subscription_id
   features {}
 }
 
 provider "azurerm" {
-  alias = "new"
+  alias           = "new"
   use_oidc        = true
   subscription_id = var.new_subscription_id
   features {}
