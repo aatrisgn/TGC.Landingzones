@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "state_file_resource_group" {
-  provider = azurerm.old
+  provider = azurerm.new
 
   for_each = local.environment_types
 
@@ -8,6 +8,10 @@ resource "azurerm_resource_group" "state_file_resource_group" {
 
   tags = {
     "provision" = "landingzones"
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
@@ -85,7 +89,7 @@ resource "github_repository_environment" "product_repository_environments" {
 }
 
 resource "azurerm_resource_group" "product_environment_group" {
-  provider = azurerm.old
+  provider = azurerm.new
 
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
@@ -96,6 +100,10 @@ resource "azurerm_resource_group" "product_environment_group" {
 
   tags = {
     "provision" = "landingzones"
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
@@ -141,8 +149,6 @@ resource "azuread_service_principal" "product_environment_spns" {
 }
 
 resource "azurerm_role_assignment" "product_environment_owner" {
-  provider = azurerm.old
-
   for_each = azuread_service_principal.product_environment_spns
 
   scope                = azurerm_resource_group.product_environment_group[each.key].id
@@ -151,8 +157,6 @@ resource "azurerm_role_assignment" "product_environment_owner" {
 }
 
 resource "azurerm_role_assignment" "shared_dev_log_analytic_workspace_contributor" {
-  provider = azurerm.new
-
   for_each = {
     for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "dev")
   }
@@ -242,8 +246,6 @@ resource "github_actions_secret" "secret_client_id" {
 }
 
 resource "azurerm_role_assignment" "state_storage_account_role_assignment" {
-  provider = azurerm.old
-
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
@@ -254,8 +256,6 @@ resource "azurerm_role_assignment" "state_storage_account_role_assignment" {
 }
 
 resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
-  provider = azurerm.old
-
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
@@ -266,8 +266,6 @@ resource "azurerm_role_assignment" "state_storage_container_role_assignment" {
 }
 
 resource "azurerm_role_assignment" "acr_pull_role_assignment" {
-  provider = azurerm.old
-
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.environment_name == "dev"
   }
@@ -278,8 +276,6 @@ resource "azurerm_role_assignment" "acr_pull_role_assignment" {
 }
 
 resource "azurerm_role_assignment" "acr_push_role_assignment" {
-  provider = azurerm.old
-
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.requires_acr_push
   }
