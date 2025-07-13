@@ -9,6 +9,7 @@ variable "childzone_environments" {
 }
 
 variable "environment" {
+
   description = "Deployment environment"
   type        = string
 }
