@@ -68,7 +68,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var-file='environments/${{ env.ENV_NAME }}/vars.tfvars' -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}"
+      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var-file='environments/${{ env.ENV_NAME }}/vars.tfvars' -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}" -var="old_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="new_subscription_id=${{ secrets.PLATFORM_AZURE_SUBSCRIPTION_ID }}"
 
   deploy_landingzones:
     runs-on: ubuntu-latest
@@ -112,7 +112,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var-file='environments/${{ env.ENV_NAME }}/vars.tfvars' -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}" -out=tfplan
+      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var-file='environments/${{ env.ENV_NAME }}/vars.tfvars' -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}" -out=tfplan -var="old_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="new_subscription_id=${{ secrets.PLATFORM_AZURE_SUBSCRIPTION_ID }}"
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
