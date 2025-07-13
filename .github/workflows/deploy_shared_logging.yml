@@ -43,9 +43,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Test
-      run: echo ${{ github.ref }}
-
     - name: Install Terraform
       run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
 
@@ -153,7 +150,7 @@ jobs:
     environment: prd
     name: "PRD: Apply logging deployment"
     needs: [plan_logging_zones_prd, deploy_logging_zones_dev]
-    if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request' && github.ref == 'main'
+    if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     defaults:
       run:
         working-directory: ./terraform/logging

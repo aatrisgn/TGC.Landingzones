@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "state_file_resource_group" {
 
-  name     = "rg-dnszones-shared-${var.environment}-westeurope"
+  name     = "rg-dnszones-shared-${var.environment}-global"
   location = "westeurope"
 
   tags = {
