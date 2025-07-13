@@ -86,7 +86,7 @@ resource "github_repository_environment" "product_repository_environments" {
 
 resource "azurerm_resource_group" "product_environment_group" {
   provider = azurerm.old
-  
+
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
   }
