@@ -5,7 +5,11 @@ param (
 )
 
 # Get all landingZone.json files recursively 
+Write-Host "Locating landingzones.json files in $rootFolder ..."
+
 $jsonFiles = Get-ChildItem -Path $rootFolder -Filter "landingZone.json" -Recurse 
+
+Write-Host $jsonFiles
 
 # Initialize an array to hold the combined payload 
 $combinedNameServers = @() # Loop through each JSON file and add its content to the combined payload 
@@ -23,10 +27,12 @@ foreach ($file in $jsonFiles) {
 }
 
 # Convert the combined payload to JSON format 
-$combinedJson = $ombinedNameServers | ConvertTo-Json -Depth 5 
+$combinedJson = $combinedNameServers | ConvertTo-Json -Depth 5 
 
 Write-host "Located the following json:"
 Write-Host $combinedJson
+
+$outputFilePath = "$outputFilePath/dnszone_input.auto.tfvars.json"
 
 # Write the combined JSON to the output file 
 $combinedJson | Set-Content -Path $outputFilePath
