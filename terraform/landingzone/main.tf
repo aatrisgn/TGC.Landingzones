@@ -147,13 +147,17 @@ resource "azurerm_role_assignment" "product_environment_owner" {
 }
 
 resource "azurerm_role_assignment" "shared_dev_log_analytic_workspace_contributor" {
+  # for_each = {
+  #   for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "dev")
+  # }
+
   for_each = {
-    for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "dev")
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.environment_name == "dev"
   }
 
   scope                = data.azurerm_log_analytics_workspace.shared_dev_log_analytic_workspace.id
   role_definition_name = "Log Analytics Contributor"
-  principal_id         = each.value
+  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
 
 resource "azurerm_role_assignment" "shared_prd_log_analytic_workspace_contributor" {
