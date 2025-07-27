@@ -6,14 +6,14 @@
             "Name": "Dev",
             "Location": "WestEurope",
             "Type": "Dev",
-            "ContainerRegistryNeeded": false,
+            "ContainerRegistryNeeded": true,
             "ApplicationDeveloperRoleNeeded": false
         },
         {
             "Name":"Prd",
             "Location":"WestEurope",
             "Type":"Prd",
-            "ContainerRegistryNeeded":false,
+            "ContainerRegistryNeeded":true,
             "ApplicationDeveloperRoleNeeded": false
         }
     ]
