@@ -280,3 +280,13 @@ resource "azurerm_role_assignment" "acr_push_role_assignment" {
   role_definition_name = "AcrPush"
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
+
+resource "azurerm_role_assignment" "acr_import_role_assignment" {
+  for_each = {
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.requires_acr_push
+  }
+
+  scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
+  role_definition_name = "ContainerRegistryDataImporterandDataReader"
+  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
+}

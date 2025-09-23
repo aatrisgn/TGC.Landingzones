@@ -6,7 +6,7 @@
             "Name": "Dev",
             "Location": "WestEurope",
             "Type": "Dev",
-            "ContainerRegistryNeeded": false,
+            "ContainerRegistryNeeded": true,
             "ApplicationDeveloperRoleNeeded": false,
             "ChildzoneNS": {
                 "RootDomain":"dev.asgerthyregod.dk",
@@ -18,7 +18,7 @@
             "Name":"Prd",
             "Location":"WestEurope",
             "Type":"Prd",
-            "ContainerRegistryNeeded":false,
+            "ContainerRegistryNeeded":true,
             "ApplicationDeveloperRoleNeeded": false,
             "ChildzoneNS": {
                 "RootDomain":"asgerthyregod.dk",
