@@ -146,34 +146,6 @@ resource "azurerm_role_assignment" "product_environment_owner" {
   principal_id         = each.value.object_id
 }
 
-resource "azurerm_role_assignment" "shared_dev_log_analytic_workspace_contributor" {
-  # for_each = {
-  #   for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "dev")
-  # }
-
-  for_each = {
-    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.environment_name == "dev"
-  }
-
-  scope                = data.azurerm_log_analytics_workspace.shared_dev_log_analytic_workspace.id
-  role_definition_name = "Log Analytics Contributor"
-  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
-}
-
-resource "azurerm_role_assignment" "shared_prd_log_analytic_workspace_contributor" {
-  # for_each = {
-  #   for spn in azuread_service_principal.product_environment_spns : spn.object_id => spn.object_id if strcontains(spn.display_name, "prd")
-  # }
-
-  for_each = {
-    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.environment_name == "prd"
-  }
-
-  scope                = data.azurerm_log_analytics_workspace.shared_prd_log_analytic_workspace.id
-  role_definition_name = "Log Analytics Contributor"
-  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
-}
-
 resource "github_actions_secret" "secret_subscription_id" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment
@@ -278,5 +250,15 @@ resource "azurerm_role_assignment" "acr_push_role_assignment" {
 
   scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
   role_definition_name = "AcrPush"
+  principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
+}
+
+resource "azurerm_role_assignment" "acr_import_role_assignment" {
+  for_each = {
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.requires_acr_push
+  }
+
+  scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
+  role_definition_name = "ContainerRegistryDataImporterandDataReader"
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
