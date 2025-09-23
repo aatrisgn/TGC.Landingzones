@@ -259,6 +259,6 @@ resource "azurerm_role_assignment" "acr_import_role_assignment" {
   }
 
   scope                = azurerm_container_registry.container_registry[each.value.environment_name].id
-  role_definition_name = "ContainerRegistryDataImporterandDataReader"
+  role_definition_name = "Container Registry Data Importer and Data Reader"
   principal_id         = azuread_service_principal.product_environment_spns[each.key].object_id
 }
