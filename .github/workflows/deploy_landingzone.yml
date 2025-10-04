@@ -21,9 +21,6 @@ permissions:
   contents: read
   pull-requests: write
 
-env:
-  LANDING_ZONE_FILE_NAME: "landingzone.json"
-
 jobs:
   plan_landingzones:
     name: "Plan landingzone deployment"
