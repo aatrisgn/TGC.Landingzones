@@ -21,9 +21,6 @@ permissions:
   contents: read
   pull-requests: write
 
-env:
-  LANDING_ZONE_FILE_NAME: "landingzone.json"
-
 jobs:
   plan_landingzones:
     name: "Plan landingzone deployment"
@@ -53,7 +50,7 @@ jobs:
     - name: Generate landingzone var file
       shell: pwsh
       run: |
-        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/landingzone/${{ env.LANDING_ZONE_FILE_NAME }}"
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/landingzone"
 
     - name: Terraform Init
       run: |
@@ -68,7 +65,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var-file='environments/${{ env.ENV_NAME }}/vars.tfvars' -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}"
+      run: terraform plan -input=false -var-file='environments/${{ env.ENV_NAME }}/vars.tfvars' -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}"
 
   deploy_landingzones:
     runs-on: ubuntu-latest
@@ -97,7 +94,7 @@ jobs:
     - name: Generate landingzone var file
       shell: pwsh
       run: |
-        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/landingzone/${{ env.LANDING_ZONE_FILE_NAME }}"
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/landingzone"
 
     - name: Terraform Init
       run: |
@@ -112,7 +109,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file=${{ env.LANDING_ZONE_FILE_NAME }} -var-file='environments/${{ env.ENV_NAME }}/vars.tfvars' -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}" -out=tfplan
+      run: terraform plan -input=false -var-file='environments/${{ env.ENV_NAME }}/vars.tfvars' -var=tenant_id="${{ secrets.AZURE_TENANT_ID }}" -out=tfplan
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan

@@ -1,0 +1,20 @@
+{
+    "$schema": "../../Schemas/landingZoneSchema.json",
+    "ProductName": "RegnerDetNu",
+    "Environments": [
+        {
+            "Name": "Dev",
+            "Location": "WestEurope",
+            "Type": "Dev",
+            "ContainerRegistryNeeded": true,
+            "ApplicationDeveloperRoleNeeded": false
+        },
+        {
+            "Name":"Prd",
+            "Location":"WestEurope",
+            "Type":"Prd",
+            "ContainerRegistryNeeded":true,
+            "ApplicationDeveloperRoleNeeded": false
+        }
+    ]
+}

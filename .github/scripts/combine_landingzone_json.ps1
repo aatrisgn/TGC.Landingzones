@@ -4,6 +4,8 @@ param (
     [string]$outputFilePath
 )
 
+Write-Host "Setting working directory to $outputFilePath"
+
 # Get all landingZone.json files recursively 
 $jsonFiles = Get-ChildItem -Path $rootFolder -Filter "landingZone.json" -Recurse 
 
@@ -25,5 +27,9 @@ $combinedJson = @{
 Write-host "Located the following json:"
 Write-Host $combinedJson
 
+Set-Location -Path $outputFilePath
+
+$outputFileName = "combined_landingZone.auto.tfvars.json"
+
 # Write the combined JSON to the output file 
-$combinedJson | Set-Content -Path $outputFilePath
+$combinedJson | Set-Content -Path $outputFileName | Get-Content
