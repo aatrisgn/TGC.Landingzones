@@ -29,7 +29,7 @@ Write-Host $combinedJson
 
 Set-Location -Path $outputFilePath
 
-$outputFileName = "combined_landingZone.tfvars.json"
+$outputFileName = "combined_landingZone.auto.tfvars.json"
 
 # Write the combined JSON to the output file 
 $combinedJson | Set-Content -Path $outputFileName | Get-Content
