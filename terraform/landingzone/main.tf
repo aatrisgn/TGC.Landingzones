@@ -66,6 +66,10 @@ resource "github_repository" "product_repository" {
     repository           = "default_repository"
     include_all_branches = true
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "github_repository_environment" "product_repository_environments" {
