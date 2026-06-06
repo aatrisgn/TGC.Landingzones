@@ -14,9 +14,9 @@ locals {
 }
 
 import {
-  for_each = {
-    for repos in local.old_repos : repo => repo if var.environment == "prd"
-  }
+  for_each = var.environment == "prd" ? {
+    for key, value in local.old_repos : key => value
+  } : {}
 
   #local.old_repos if var.environment == "prd"
 
