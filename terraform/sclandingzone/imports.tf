@@ -14,7 +14,11 @@ locals {
 }
 
 import {
-  for_each = local.old_repos if var.environment == "prd"
+  for_each = {
+    for repos in local.old_repos : repo => repo if var.environment == "prd"
+  }
+
+  #local.old_repos if var.environment == "prd"
 
   to = github_repository.product_repository[each.key]
   id = each.value
