@@ -4,7 +4,6 @@ on:
   push:
     branches: ["main"]
     paths:
-        - "terraform/landingzone/*"
         - ".github/workflows/deploy_landingzone.yml"
   pull_request:
     branches: ["main"]

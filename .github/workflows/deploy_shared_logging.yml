@@ -4,7 +4,6 @@ on:
   push:
     branches: ["main"]
     paths:
-        - "terraform/logging/*"
         - ".github/workflows/deploy_shared_logging.yml"
   pull_request:
     branches: ["main"]

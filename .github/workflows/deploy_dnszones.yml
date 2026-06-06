@@ -4,7 +4,6 @@ on:
   push:
     branches: ["main"]
     paths:
-        - "terraform/dnszones/*"
         - ".github/workflows/deploy_dnszones.yml"
   pull_request:
     branches: ["main"]
