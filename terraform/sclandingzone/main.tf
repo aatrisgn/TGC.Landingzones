@@ -2,7 +2,7 @@ resource "scaleway_registry_namespace" "main" {
   name        = "${var.environment}-scr-lz-fr-par"
   description = "Registry Namespace for landingzone - ${var.environment}"
   is_public   = false
-  project_id = data.scaleway_account_project.default_project.id
+  project_id  = data.scaleway_account_project.default_project.id
 }
 
 resource "scaleway_account_project" "product_project" {
@@ -30,10 +30,10 @@ resource "scaleway_iam_policy" "product_project_policy" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway
   }
-  
-  name    = "project-policy-${each.key}-AllProductsFullAccess"
+
+  name           = "project-policy-${each.key}-AllProductsFullAccess"
   application_id = scaleway_iam_application.application_project[each.key].id
-  
+
   rule {
     project_ids          = [scaleway_account_project.product_project[each.key].id]
     permission_set_names = ["AllProductsFullAccess"]
@@ -44,10 +44,10 @@ resource "scaleway_iam_policy" "product_container_registry_policy" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway
   }
-  
-  name    = "project-policy-${each.key}-registry-full-access"
+
+  name           = "project-policy-${each.key}-registry-full-access"
   application_id = scaleway_iam_application.application_project[each.key].id
-  
+
   rule {
     project_ids          = [data.scaleway_account_project.default_project.id]
     permission_set_names = ["ContainerRegistryFullAccess"]
@@ -59,10 +59,10 @@ resource "scaleway_iam_api_key" "main" {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway
   }
 
-  application_id = scaleway_iam_application.application_project[each.key].id
-  description    = "API key for product application"
+  application_id     = scaleway_iam_application.application_project[each.key].id
+  description        = "API key for product application"
   default_project_id = scaleway_account_project.product_project[each.key].id
-  expires_at = "2026-06-29T10:43:29Z"
+  expires_at         = "2026-06-29T10:43:29Z"
 }
 
 resource "scaleway_iam_api_key" "state_api_key" {
@@ -70,10 +70,10 @@ resource "scaleway_iam_api_key" "state_api_key" {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway
   }
 
-  application_id = scaleway_iam_application.application_project[each.key].id
-  description    = "API key for product application"
+  application_id     = scaleway_iam_application.application_project[each.key].id
+  description        = "API key for product application"
   default_project_id = data.scaleway_account_project.default_project.id
-  expires_at = "2026-06-29T10:43:29Z"
+  expires_at         = "2026-06-29T10:43:29Z"
 }
 
 // Output credentials on GitHub repos
@@ -107,7 +107,7 @@ resource "github_actions_secret" "secret_organization_id" {
   }
 
   #Should directly reference repositories
-  repository      = "TGC.${each.value.product_name}" 
+  repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_organization_id"
   plaintext_value = var.organization_id
 
@@ -120,7 +120,7 @@ resource "github_actions_secret" "secret_project_id" {
   }
 
   #Should directly reference repositories
-  repository      = "TGC.${each.value.product_name}" 
+  repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_project_id"
   plaintext_value = scaleway_account_project.product_project[each.key].id
 
@@ -133,7 +133,7 @@ resource "github_actions_secret" "deployment_access_key" {
   }
 
   #Should directly reference repositories
-  repository      = "TGC.${each.value.product_name}" 
+  repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_deployment_access_key"
   plaintext_value = scaleway_iam_api_key.main[each.key].access_key
 
@@ -146,7 +146,7 @@ resource "github_actions_secret" "deployment_secret_access_key" {
   }
 
   #Should directly reference repositories
-  repository      = "TGC.${each.value.product_name}" 
+  repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_deployment_secret_access_key"
   plaintext_value = scaleway_iam_api_key.main[each.key].secret_key
 
@@ -159,7 +159,7 @@ resource "github_actions_secret" "state_access_key" {
   }
 
   #Should directly reference repositories
-  repository      = "TGC.${each.value.product_name}" 
+  repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_state_access_key"
   plaintext_value = scaleway_iam_api_key.state_api_key[each.key].access_key
 
@@ -172,7 +172,7 @@ resource "github_actions_secret" "state_secret_access_key" {
   }
 
   #Should directly reference repositories
-  repository      = "TGC.${each.value.product_name}" 
+  repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_state_secret_access_key"
   plaintext_value = scaleway_iam_api_key.state_api_key[each.key].secret_key
 
