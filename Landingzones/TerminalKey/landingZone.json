@@ -7,14 +7,16 @@
             "Location": "WestEurope",
             "Type": "Dev",
             "ContainerRegistryNeeded": true,
-            "ApplicationDeveloperRoleNeeded": false
+            "ApplicationDeveloperRoleNeeded": false,
+            "NeedsScaleway":false
         },
         {
             "Name":"Prd",
             "Location":"WestEurope",
             "Type":"Prd",
             "ContainerRegistryNeeded":true,
-            "ApplicationDeveloperRoleNeeded": false
+            "ApplicationDeveloperRoleNeeded": false,
+            "NeedsScaleway":false
         }
     ]
 }

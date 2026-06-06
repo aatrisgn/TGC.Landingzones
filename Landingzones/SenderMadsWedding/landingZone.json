@@ -6,13 +6,15 @@
             "Name":"Dev",
             "Location":"WestEurope",
             "Type":"Dev",
-            "ContainerRegistryNeeded":false
+            "ContainerRegistryNeeded":false,
+            "NeedsScaleway":false
         },
         {
             "Name":"Prd",
             "Location":"WestEurope",
             "Type":"Prd",
-            "ContainerRegistryNeeded":false
+            "ContainerRegistryNeeded":false,
+            "NeedsScaleway":false
         }
     ]
 }
