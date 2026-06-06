@@ -194,7 +194,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=project_id="${{ secrets.SCW_PROJECT_ID_PRD }}" -var=environment="prd" -out=tfplan
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=environment="prd" -out=tfplan
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
