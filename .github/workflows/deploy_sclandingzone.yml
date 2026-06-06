@@ -57,7 +57,7 @@ jobs:
         -backend-config=access_key="${{ secrets.SCW_LANDINGZONE_DEV_STATE_ACCESS_KEY }}" \
         -backend-config=secret_key="${{ secrets.SCW_LANDINGZONE_DEV_STATE_SECRET_ACCESS_KEY }}" \
         -backend-config=bucket="${{ secrets.SCW_LANDINGZONE_DEV_STATE_BUCKET }}" \
-        -backend-config=key="sclandingzone.dev.tfstate"
+        -backend-config=key="landingzone.dev.tfstate"
 
     - name: Terraform Validate
       run: terraform validate
@@ -100,7 +100,7 @@ jobs:
         -backend-config=access_key="${{ secrets.SCW_LANDINGZONE_PRD_STATE_ACCESS_KEY }}" \
         -backend-config=secret_key="${{ secrets.SCW_LANDINGZONE_PRD_STATE_SECRET_ACCESS_KEY }}" \
         -backend-config=bucket="${{ secrets.SCW_LANDINGZONE_PRD_STATE_BUCKET }}" \
-        -backend-config=key="sclandingzone.prd.tfstate"
+        -backend-config=key="landingzone.prd.tfstate"
 
     - name: Terraform Validate
       run: terraform validate
@@ -142,7 +142,7 @@ jobs:
         -backend-config=access_key="${{ secrets.SCW_BACKEND_ACCESS_KEY }}" \
         -backend-config=secret_key="${{ secrets.SCW_BACKEND_SECRET_KEY }}" \
         -backend-config=bucket="${{ secrets.SCW_BACKEND_BUCKET_DEV }}" \
-        -backend-config=key="sclandingzone.dev.tfstate"
+        -backend-config=key="landingzone.dev.tfstate"
 
     - name: Terraform Validate
       run: terraform validate
@@ -187,7 +187,7 @@ jobs:
         -backend-config=access_key="${{ secrets.SCW_LANDINGZONE_PRD_STATE_ACCESS_KEY }}" \
         -backend-config=secret_key="${{ secrets.SCW_LANDINGZONE_PRD_STATE_SECRET_ACCESS_KEY }}" \
         -backend-config=bucket="${{ secrets.SCW_BACKEND_BUCKET_PRD }}" \
-        -backend-config=key="sclandingzone.prd.tfstate"
+        -backend-config=key="landingzone.prd.tfstate"
 
     - name: Terraform Validate
       run: terraform validate
