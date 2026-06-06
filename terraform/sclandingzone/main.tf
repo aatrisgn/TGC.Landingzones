@@ -99,8 +99,6 @@ resource "github_repository" "product_repository" {
   }
 }
 
-#Secrets: Access key, secret key, project name, org name
-
 resource "github_actions_secret" "secret_organization_id" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway

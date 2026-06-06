@@ -76,7 +76,7 @@ jobs:
 
     env:
       SCW_ACCESS_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_ACCESS_KEY }}"
-      SCW_SECRET_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_ACCESS_KEY }}"
+      SCW_SECRET_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_SECRET_ACCESS_KEY }}"
       GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
       ENV_NAME: "prd"
 
@@ -179,7 +179,7 @@ jobs:
     - name: Generate landingzone var file
       shell: pwsh
       run: |
-        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones" -outputFilePath "${{ github.workspace }}/terraform/sclandingzone"
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones/prd" -outputFilePath "${{ github.workspace }}/terraform/sclandingzone"
 
     - name: Terraform Init
       run: |
