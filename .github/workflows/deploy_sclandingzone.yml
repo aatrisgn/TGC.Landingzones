@@ -1,0 +1,200 @@
+name: Deploy Scaleway Landing Zones
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+        - "terraform/sclandingzone/*"
+        - "Landingzones/*"
+        - ".github/workflows/deploy_sclandingzone.yml"
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      applyTF:
+        description: 'Apply TF plan?'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  plan_sclandingzone_dev:
+    name: "Plan sclandingzone dev"
+    runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        working-directory: ./terraform/sclandingzone
+
+    env:
+      SCW_ACCESS_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_ACCESS_KEY }}"
+      SCW_SECRET_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_SECRET_ACCESS_KEY }}"
+      GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
+      ENV_NAME: "dev"
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Terraform
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
+
+    - name: Terraform Fmt
+      run: terraform fmt -check
+
+    - name: Generate landingzone var file
+      shell: pwsh
+      run: |
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones/dev" -outputFilePath "${{ github.workspace }}/terraform/sclandingzone"
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+        -backend-config=access_key="${{ secrets.SCW_LANDINGZONE_DEV_STATE_ACCESS_KEY }}" \
+        -backend-config=secret_key="${{ secrets.SCW_LANDINGZONE_DEV_STATE_SECRET_ACCESS_KEY }}" \
+        -backend-config=bucket="${{ secrets.SCW_LANDINGZONE_DEV_STATE_BUCKET }}" \
+        -backend-config=key="landingzone.dev.tfstate"
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=environment="dev"
+
+  plan_sclandingzone_prd:
+    name: "Plan sclandingzone prd"
+    runs-on: ubuntu-latest
+    environment: prd
+    defaults:
+      run:
+        working-directory: ./terraform/sclandingzone
+
+    env:
+      SCW_ACCESS_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_ACCESS_KEY }}"
+      SCW_SECRET_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_SECRET_ACCESS_KEY }}"
+      GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
+      ENV_NAME: "prd"
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Terraform
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
+
+    - name: Terraform Fmt
+      run: terraform fmt -check
+
+    - name: Generate landingzone var file
+      shell: pwsh
+      run: |
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones/prd" -outputFilePath "${{ github.workspace }}/terraform/sclandingzone"
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+        -backend-config=access_key="${{ secrets.SCW_LANDINGZONE_PRD_STATE_ACCESS_KEY }}" \
+        -backend-config=secret_key="${{ secrets.SCW_LANDINGZONE_PRD_STATE_SECRET_ACCESS_KEY }}" \
+        -backend-config=bucket="${{ secrets.SCW_LANDINGZONE_PRD_STATE_BUCKET }}" \
+        -backend-config=key="landingzone.prd.tfstate"
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=environment="prd"
+
+  deploy_sclandingzone_dev:
+    runs-on: ubuntu-latest
+    environment: dev
+    name: "Apply sclandingzone dev"
+    needs: plan_sclandingzone_dev
+    if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
+    defaults:
+      run:
+        working-directory: ./terraform/sclandingzone
+
+    env:
+      SCW_ACCESS_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_ACCESS_KEY }}"
+      SCW_SECRET_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_SECRET_ACCESS_KEY }}"
+      GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
+      ENV_NAME: "dev"
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Terraform
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
+
+    - name: Generate landingzone var file
+      shell: pwsh
+      run: |
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones/dev" -outputFilePath "${{ github.workspace }}/terraform/sclandingzone"
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+        -backend-config=access_key="${{ secrets.SCW_LANDINGZONE_DEV_STATE_ACCESS_KEY }}" \
+        -backend-config=secret_key="${{ secrets.SCW_LANDINGZONE_DEV_STATE_SECRET_ACCESS_KEY }}" \
+        -backend-config=bucket="${{ secrets.SCW_LANDINGZONE_DEV_STATE_BUCKET }}" \
+        -backend-config=key="landingzone.dev.tfstate"
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=project_id="${{ secrets.SCW_PROJECT_ID_DEV }}" -var=environment="dev" -out=tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+
+  deploy_sclandingzone_prd:
+    runs-on: ubuntu-latest
+    environment: prd
+    name: "Apply sclandingzone prd"
+    needs: [plan_sclandingzone_prd, deploy_sclandingzone_dev]
+    if: github.event.inputs.applyTF == 'true' && github.event_name != 'push' && github.event_name != 'pull_request'
+    defaults:
+      run:
+        working-directory: ./terraform/sclandingzone
+
+    env:
+      SCW_ACCESS_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_ACCESS_KEY }}"
+      SCW_SECRET_KEY: "${{ secrets.SCW_LANDINGZONE_BOOTSTRAP_DEPLOYMENT_SECRET_ACCESS_KEY }}"
+      GITHUB_TOKEN: "${{ secrets.TF_GITHUB_TOKEN }}"
+      ENV_NAME: "prd"
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Terraform
+      run: bash "${{ github.workspace }}/.github/scripts/install_terraform.sh"
+
+    - name: Generate landingzone var file
+      shell: pwsh
+      run: |
+        ${{ github.workspace }}/.github/scripts/combine_landingzone_json.ps1 -rootFolder "${{ github.workspace }}/Landingzones/prd" -outputFilePath "${{ github.workspace }}/terraform/sclandingzone"
+
+    - name: Terraform Init
+      run: |
+        terraform init \
+        -backend-config=access_key="${{ secrets.SCW_LANDINGZONE_PRD_STATE_ACCESS_KEY }}" \
+        -backend-config=secret_key="${{ secrets.SCW_LANDINGZONE_PRD_STATE_SECRET_ACCESS_KEY }}" \
+        -backend-config=bucket="${{ secrets.SCW_LANDINGZONE_PRD_STATE_BUCKET }}" \
+        -backend-config=key="landingzone.prd.tfstate"
+
+    - name: Terraform Validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=environment="prd" -out=tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan

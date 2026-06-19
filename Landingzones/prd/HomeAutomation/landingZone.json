@@ -1,0 +1,14 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName": "HomeAutomation",
+    "Environments": [
+        {
+            "Name": "Dev",
+            "Location": "WestEurope",
+            "Type": "Dev",
+            "ContainerRegistryNeeded": true,
+            "ApplicationDeveloperRoleNeeded": true,
+            "NeedsScaleway":true
+        }
+    ]
+}

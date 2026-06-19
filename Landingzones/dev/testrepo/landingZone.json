@@ -1,0 +1,22 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName": "TestRepo",
+    "Environments": [
+        {
+            "Name": "Dev",
+            "Location": "WestEurope",
+            "Type": "Dev",
+            "ContainerRegistryNeeded": true,
+            "ApplicationDeveloperRoleNeeded": true,
+            "NeedsScaleway":true
+        },
+        {
+            "Name": "Prd",
+            "Location": "WestEurope",
+            "Type": "Prd",
+            "ContainerRegistryNeeded": true,
+            "ApplicationDeveloperRoleNeeded": true,
+            "NeedsScaleway":true
+        }
+    ]
+}

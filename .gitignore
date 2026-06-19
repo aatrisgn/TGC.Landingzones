@@ -22,6 +22,7 @@ mono_crash.*
 *.tfstate.backup
 **/.terraform/**
 *.tfinit
+**/local_state/**
 
 # Build results
 [Dd]ebug/

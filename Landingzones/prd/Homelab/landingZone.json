@@ -1,0 +1,22 @@
+{
+    "$schema": "../../Schemas/landingZoneSchema.json",
+    "ProductName": "Homelab",
+    "Environments": [
+        {
+            "Name": "Dev",
+            "Location": "WestEurope",
+            "Type": "Dev",
+            "ContainerRegistryNeeded": true,
+            "ApplicationDeveloperRoleNeeded": false,
+            "NeedsScaleway":true
+        },
+        {
+            "Name":"Prd",
+            "Location":"WestEurope",
+            "Type":"Prd",
+            "ContainerRegistryNeeded":true,
+            "ApplicationDeveloperRoleNeeded": false,
+            "NeedsScaleway":true
+        }
+    ]
+}

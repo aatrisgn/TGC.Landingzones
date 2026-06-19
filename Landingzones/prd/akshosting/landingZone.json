@@ -1,0 +1,22 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName": "akshosting",
+    "Environments": [
+        {
+            "Name": "Dev",
+            "Location": "WestEurope",
+            "Type": "Dev",
+            "ContainerRegistryNeeded": true,
+            "ApplicationDeveloperRoleNeeded": true,
+            "NeedsScaleway":false
+        },
+        {
+            "Name": "Prd",
+            "Location": "WestEurope",
+            "Type": "Prd",
+            "ContainerRegistryNeeded": true,
+            "ApplicationDeveloperRoleNeeded": true,
+            "NeedsScaleway":false
+        }
+    ]
+}
