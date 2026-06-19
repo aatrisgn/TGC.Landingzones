@@ -1,5 +1,5 @@
 resource "scaleway_registry_namespace" "main" {
-  name        = "${var.environment}-scr-lz-fr-par"
+  name        = "crn-shared-${var.environment}-scr-lz-fr-par"
   description = "Registry Namespace for landingzone - ${var.environment}"
   is_public   = false
   project_id  = data.scaleway_account_project.default_project.id
