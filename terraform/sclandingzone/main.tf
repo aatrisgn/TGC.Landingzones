@@ -71,7 +71,7 @@ resource "scaleway_iam_api_key" "state_api_key" {
   }
 
   application_id     = scaleway_iam_application.application_project[each.key].id
-  description        = "API key for product application"
+  description        = "API key for state management"
   default_project_id = data.scaleway_account_project.default_project.id
   expires_at         = "2026-06-29T10:43:29Z"
 }
