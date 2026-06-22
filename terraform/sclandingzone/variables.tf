@@ -25,6 +25,16 @@ variable "organization_id" {
   }
 }
 
+variable "bucket_name" {
+  description = "Name of the Scaleway bucket"
+  type        = string
+  sensitive = true
+  validation {
+    condition     = can(regex("^[a-z0-9-]{3,63}$", var.bucket_name))
+    error_message = "The variable value must be a valid bucket name (3-63 characters, lowercase letters, numbers, and hyphens)."
+  }
+}
+
 variable "environment" {
   description = "The environment for the landing zone"
   type        = string

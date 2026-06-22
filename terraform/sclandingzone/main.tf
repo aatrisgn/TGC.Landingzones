@@ -13,7 +13,7 @@ resource "scaleway_account_project" "product_project" {
   name = "${each.key}-${each.value.location}"
 
   lifecycle {
-    //prevent_destroy = true
+    prevent_destroy = true
   }
 }
 
@@ -173,6 +173,19 @@ resource "github_actions_secret" "state_secret_access_key" {
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_state_secret_access_key"
   plaintext_value = scaleway_iam_api_key.state_api_key[each.key].secret_key
+
+  depends_on = [github_repository.product_repository]
+}
+
+resource "github_actions_secret" "state_bucket_name" {
+  for_each = {
+    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway
+  }
+
+  #Should directly reference repositories
+  repository      = "TGC.${each.value.product_name}"
+  secret_name     = "${replace(each.key, "-", "_")}_state_bucket_name"
+  plaintext_value = var.bucket_name
 
   depends_on = [github_repository.product_repository]
 }

@@ -73,7 +73,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=environment="dev"
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=bucket_name="${{ secrets.SCW_LANDINGZONE_DEV_STATE_BUCKET }}" -var=environment="dev"
 
   plan_sclandingzone_prd:
     name: "Plan sclandingzone prd"
@@ -116,7 +116,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=environment="prd"
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=bucket_name="${{ secrets.SCW_LANDINGZONE_PRD_STATE_BUCKET }}" -var=environment="prd"
 
   deploy_sclandingzone_dev:
     runs-on: ubuntu-latest
@@ -162,7 +162,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=environment="dev" -out=tfplan
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=bucket_name="${{ secrets.SCW_LANDINGZONE_DEV_STATE_BUCKET }}" -var=environment="dev" -out=tfplan
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
@@ -214,7 +214,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=environment="prd" -out=tfplan
+      run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=bucket_name="${{ secrets.SCW_LANDINGZONE_PRD_STATE_BUCKET }}" -var=environment="prd" -out=tfplan
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
