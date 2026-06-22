@@ -31,26 +31,22 @@ resource "scaleway_iam_policy" "product_project_policy" {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway
   }
 
-  name           = "project-policy-${each.key}-AllProductsFullAccess"
+  name           = "project-policy-${each.key}-spn-default-access"
   application_id = scaleway_iam_application.application_project[each.key].id
 
   rule {
     project_ids          = [scaleway_account_project.product_project[each.key].id]
     permission_set_names = ["AllProductsFullAccess"]
   }
-}
 
-resource "scaleway_iam_policy" "product_container_registry_policy" {
-  for_each = {
-    for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway
+  rule {
+    organization_id      = var.organization_id
+    permission_set_names = ["ProjectReadOnly"]
   }
-
-  name           = "project-policy-${each.key}-registry-full-access"
-  application_id = scaleway_iam_application.application_project[each.key].id
 
   rule {
     project_ids          = [data.scaleway_account_project.default_project.id]
-    permission_set_names = ["ContainerRegistryFullAccess"]
+    permission_set_names = ["ContainerRegistryFullAccess", "ObjectStorageObjectsRead", "ObjectStorageObjectsWrite"]
   }
 }
 
