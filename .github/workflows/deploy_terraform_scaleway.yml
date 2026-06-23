@@ -21,22 +21,16 @@ on:
     secrets:
       organization_id:
         required: true
-        type: string
       deployment_access_key:
         required: true
-        type: string
       deployment_secret_access_key:
         required: true
-        type: string
       state_access_key:
         required: true
-        type: string
       state_secret_access_key:
         required: true
-        type: string
       state_bucket_name:
         required: true
-        type: string
 
 jobs:
   build_job:
