@@ -8,6 +8,20 @@ on:
       working_directory:
         required: true
         type: string
+      applyTF:
+        required: true
+        type: string
+      var_file_path:
+        required: true
+        type: string
+      state_key:
+        required: true
+        type: string
+
+    secrets:
+      organization_id:
+        required: true
+        type: string
       deployment_access_key:
         required: true
         type: string
@@ -21,18 +35,6 @@ on:
         required: true
         type: string
       state_bucket_name:
-        required: true
-        type: string
-      state_key:
-        required: true
-        type: string
-      organization_id:
-        required: true
-        type: string
-      applyTF:
-        required: true
-        type: string
-      var_file_path:
         required: true
         type: string
 
