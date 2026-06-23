@@ -38,11 +38,11 @@ jobs:
     name: Deploy infrastructure
     defaults:
       run:
-        working-directory: ${{ inputs.working_directory }} #./terraform/infrastructure
+        working-directory: ${{ inputs.working_directory }}
     
     env:
-      SCW_ACCESS_KEY: ${{ inputs.deployment_access_key }} # "${{ secrets.ASGERTHYREGODDK_PRD_DEPLOYMENT_ACCESS_KEY }}"
-      SCW_SECRET_KEY: ${{ inputs.deployment_secret_access_key }} # "${{ secrets.ASGERTHYREGODDK_PRD_DEPLOYMENT_SECRET_ACCESS_KEY }}"
+      SCW_ACCESS_KEY: ${{ secrets.deployment_access_key }} 
+      SCW_SECRET_KEY: ${{ secrets.deployment_secret_access_key }}
 
     steps:
     - uses: actions/checkout@v3
@@ -56,9 +56,9 @@ jobs:
     - name: Terraform Init
       run: |
         terraform init \
-        -backend-config=access_key="${{ inputs.state_access_key }}" \
-        -backend-config=secret_key="${{ inputs.state_secret_access_key }}" \
-        -backend-config=bucket="${{ inputs.state_bucket_name }}" \
+        -backend-config=access_key="${{ secrets.state_access_key }}" \
+        -backend-config=secret_key="${{ secrets.state_secret_access_key }}" \
+        -backend-config=bucket="${{ secrets.state_bucket_name }}" \
         -backend-config=key="${{ inputs.state_key }}"
         
     - name: Terraform Validate
@@ -66,7 +66,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -input=false -var-file="${{ inputs.var_file_path }}" -var=organization_id="${{ inputs.organization_id }}" -out=tfplan
+      run: terraform plan -input=false -var-file="${{ inputs.var_file_path }}" -var=organization_id="${{ secrets.organization_id }}" -out=tfplan
 
     - name: Terraform Apply
       if: ${{ inputs.applyTF == 'true' }}
