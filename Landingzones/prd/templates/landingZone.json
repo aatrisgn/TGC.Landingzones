@@ -1,0 +1,22 @@
+{
+    "$schema": "../Schemas/landingZoneSchema.json",
+    "ProductName": "templates",
+    "Environments": [
+        {
+            "Name": "Dev",
+            "Location": "WestEurope",
+            "Type": "Dev",
+            "ContainerRegistryNeeded": false,
+            "ApplicationDeveloperRoleNeeded": false,
+            "NeedsScaleway":false
+        },
+        {
+            "Name": "Prd",
+            "Location": "WestEurope",
+            "Type": "Prd",
+            "ContainerRegistryNeeded": false,
+            "ApplicationDeveloperRoleNeeded": false,
+            "NeedsScaleway":false
+        }
+    ]
+}
