@@ -1,3 +1,7 @@
+resource "time_rotating" "rotate_after_a_year" {
+  rotation_years = 1
+}
+
 resource "scaleway_registry_namespace" "main" {
   name        = "crn-shared-${var.environment}-scr-lz-fr-par"
   description = "Registry Namespace for landingzone - ${var.environment}"
@@ -58,7 +62,7 @@ resource "scaleway_iam_api_key" "main" {
   application_id     = scaleway_iam_application.application_project[each.key].id
   description        = "API key for product application"
   default_project_id = scaleway_account_project.product_project[each.key].id
-  expires_at         = "2026-06-29T10:43:29Z"
+  expires_at         = time_rotating.rotate_after_a_year.rotation_rfc3339
 }
 
 resource "scaleway_iam_api_key" "state_api_key" {
@@ -69,7 +73,7 @@ resource "scaleway_iam_api_key" "state_api_key" {
   application_id     = scaleway_iam_application.application_project[each.key].id
   description        = "API key for state management"
   default_project_id = data.scaleway_account_project.default_project.id
-  expires_at         = "2026-06-29T10:43:29Z"
+  expires_at         = time_rotating.rotate_after_a_year.rotation_rfc3339
 }
 
 // Output credentials on GitHub repos
