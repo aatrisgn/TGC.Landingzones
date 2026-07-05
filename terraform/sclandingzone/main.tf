@@ -76,8 +76,6 @@ resource "scaleway_iam_api_key" "state_api_key" {
   expires_at         = time_rotating.rotate_after_a_year.rotation_rfc3339
 }
 
-// Output credentials on GitHub repos
-
 resource "github_repository" "product_repository" {
   for_each = { for product in var.Products : product.ProductName => product }
 
@@ -97,6 +95,16 @@ resource "github_repository" "product_repository" {
   lifecycle {
     prevent_destroy = true
   }
+}
+
+resource "github_actions_repository_permissions" "action_permissions" {
+  for_each = github_repository.product_repository
+  allowed_actions_config {
+    github_owned_allowed = true
+    patterns_allowed     = ["aatrisgn/*", "azure/*"]
+    verified_allowed     = false
+  }
+  repository = each.value.name
 }
 
 resource "github_actions_secret" "secret_organization_id" {

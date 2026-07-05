@@ -1,4 +1,7 @@
-# Create a Project for Landing Zone
+resource "time_rotating" "rotate_after_a_year" {
+  rotation_years = 1
+}
+
 resource "scaleway_account_project" "landing_zone_project" {
   for_each = { for env in local.environment_types : env => env }
 
@@ -53,13 +56,13 @@ resource "scaleway_iam_api_key" "main" {
   application_id = scaleway_iam_application.landingzone_app[each.key].id
   description    = "API key for landingzone application"
   default_project_id = scaleway_account_project.landing_zone_project[each.key].id
-  expires_at = "2026-06-29T10:43:29Z" #TODO: Should be calculated
+  expires_at = time_rotating.rotate_after_a_year.rotation_rfc3339
 }
 
 resource "scaleway_iam_api_key" "landingzone_deployment_api_key" {
   application_id = data.scaleway_iam_application.this_app.id
   description    = "API key for landingzone bootstrapping"
-  expires_at = "2026-06-29T10:43:29Z" #TODO: Should be calculated
+  expires_at = time_rotating.rotate_after_a_year.rotation_rfc3339
 }
 
 resource "github_repository" "landing_zone_repository" {
@@ -80,6 +83,17 @@ resource "github_repository" "landing_zone_repository" {
     prevent_destroy = true
   }
 }
+
+resource "github_actions_repository_permissions" "test" {
+  allowed_actions = "selected"
+  allowed_actions_config {
+    github_owned_allowed = true
+    patterns_allowed     = ["aatrisgn/*", "azure/*"]
+    verified_allowed     = false
+  }
+  repository = github_repository.landing_zone_repository.name
+}
+
 resource "github_actions_secret" "state_access_access_key" {
   for_each = { for env in local.environment_types : env => env }
 
