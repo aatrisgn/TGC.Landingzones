@@ -99,6 +99,8 @@ resource "github_repository" "product_repository" {
 
 resource "github_actions_repository_permissions" "action_permissions" {
   for_each = github_repository.product_repository
+
+  allowed_actions = "selected"
   allowed_actions_config {
     github_owned_allowed = true
     patterns_allowed     = ["aatrisgn/*", "azure/*"]
