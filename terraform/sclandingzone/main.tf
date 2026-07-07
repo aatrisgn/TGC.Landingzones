@@ -110,6 +110,14 @@ resource "github_actions_repository_permissions" "action_permissions" {
 }
 
 resource "github_actions_secret" "secret_organization_id" {
+  for_each = github_repository.product_repository
+
+  repository      = each.value.name
+  secret_name     = "argocd_repo_write_token"
+  plaintext_value = sensitive(data.github_actions_secrets.argocd_repo_write_token.secret_value)
+}
+
+resource "github_actions_secret" "secret_organization_id" {
   for_each = {
     for product_environment in local.product_environments : product_environment.product_environment => product_environment if product_environment.needs_scaleway
   }
