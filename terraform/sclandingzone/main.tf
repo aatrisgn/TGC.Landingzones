@@ -103,7 +103,7 @@ resource "github_actions_repository_permissions" "action_permissions" {
   allowed_actions = "selected"
   allowed_actions_config {
     github_owned_allowed = true
-    patterns_allowed     = ["aatrisgn/*", "azure/*"]
+    patterns_allowed     = ["aatrisgn/*", "azure/*", "docker/*"]
     verified_allowed     = false
   }
   repository = each.value.name
