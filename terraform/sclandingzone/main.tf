@@ -109,7 +109,7 @@ resource "github_actions_repository_permissions" "action_permissions" {
   repository = each.value.name
 }
 
-resource "github_actions_secret" "secret_organization_id" {
+resource "github_actions_secret" "github_argocd_repo_write_token" {
   for_each = github_repository.product_repository
 
   repository      = each.value.name
