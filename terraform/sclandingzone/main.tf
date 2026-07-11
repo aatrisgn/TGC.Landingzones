@@ -125,7 +125,7 @@ resource "github_actions_secret" "secret_organization_id" {
   #Should directly reference repositories
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_organization_id"
-  plaintext_value = var.organization_id
+  value = sensitive(var.organization_id)
 
   depends_on = [github_repository.product_repository]
 }
@@ -138,7 +138,7 @@ resource "github_actions_secret" "secret_project_id" {
   #Should directly reference repositories
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_project_id"
-  plaintext_value = scaleway_account_project.product_project[each.key].id
+  value = sensitive(scaleway_account_project.product_project[each.key].id)
 
   depends_on = [github_repository.product_repository]
 }
@@ -151,7 +151,7 @@ resource "github_actions_secret" "deployment_access_key" {
   #Should directly reference repositories
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_deployment_access_key"
-  plaintext_value = scaleway_iam_api_key.main[each.key].access_key
+  value = sensitive(scaleway_iam_api_key.main[each.key].access_key)
 
   depends_on = [github_repository.product_repository]
 }
@@ -164,7 +164,7 @@ resource "github_actions_secret" "deployment_secret_access_key" {
   #Should directly reference repositories
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_deployment_secret_access_key"
-  plaintext_value = scaleway_iam_api_key.main[each.key].secret_key
+  value = sensitive(scaleway_iam_api_key.main[each.key].secret_key)
 
   depends_on = [github_repository.product_repository]
 }
@@ -177,7 +177,7 @@ resource "github_actions_secret" "state_access_key" {
   #Should directly reference repositories
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_state_access_key"
-  plaintext_value = scaleway_iam_api_key.state_api_key[each.key].access_key
+  value = sensitive(scaleway_iam_api_key.state_api_key[each.key].access_key)
 
   depends_on = [github_repository.product_repository]
 }
@@ -190,7 +190,7 @@ resource "github_actions_secret" "state_secret_access_key" {
   #Should directly reference repositories
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_state_secret_access_key"
-  plaintext_value = scaleway_iam_api_key.state_api_key[each.key].secret_key
+  value = sensitive(scaleway_iam_api_key.state_api_key[each.key].secret_key)
 
   depends_on = [github_repository.product_repository]
 }
@@ -203,7 +203,7 @@ resource "github_actions_secret" "state_bucket_name" {
   #Should directly reference repositories
   repository      = "TGC.${each.value.product_name}"
   secret_name     = "${replace(each.key, "-", "_")}_state_bucket_name"
-  plaintext_value = var.bucket_name
+  value = sensitive(var.bucket_name)
 
   depends_on = [github_repository.product_repository]
 }
