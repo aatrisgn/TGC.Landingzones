@@ -112,9 +112,9 @@ resource "github_actions_repository_permissions" "action_permissions" {
 resource "github_actions_secret" "github_argocd_repo_write_token" {
   for_each = github_repository.product_repository
 
-  repository      = each.value.name
-  secret_name     = "argocd_repo_write_token"
-  plaintext_value = sensitive(data.github_actions_secrets.argocd_repo_write_token.secret_value)
+  repository  = each.value.name
+  secret_name = "argocd_repo_write_token"
+  value       = sensitive(data.scaleway_secret_version.argocd_repository_write_key.secret_data)
 }
 
 resource "github_actions_secret" "secret_organization_id" {
