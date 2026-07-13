@@ -114,7 +114,7 @@ resource "github_actions_secret" "github_argocd_repo_write_token" {
 
   repository  = each.value.name
   secret_name = "argocd_repo_write_token"
-  value       = sensitive(data.scaleway_secret_version.argocd_repository_write_key.data)
+  value       = sensitive(base64decode(data.scaleway_secret_version.argocd_repository_write_key.data))
 }
 
 resource "github_actions_secret" "secret_organization_id" {
