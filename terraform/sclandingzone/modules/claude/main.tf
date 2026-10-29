@@ -11,12 +11,12 @@ resource "github_actions_secret" "claude_code_oauth_token_secret" {
 
 resource "github_actions_secret" "github_app_private_key_secret" {
   repository  = var.repository_name
-  secret_name = "github_app_private_key"
+  secret_name = "app_private_key"
   value       = sensitive(base64decode(var.github_app_private_key))
 }
 
 resource "github_actions_secret" "github_app_installation_id_secret" {
   repository  = var.repository_name
-  secret_name = "github_app_installation_id"
+  secret_name = "app_installation_id"
   value       = sensitive(base64decode(var.github_app_installation_id))
 }
