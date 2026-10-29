@@ -100,6 +100,16 @@ resource "github_repository" "product_repository" {
   }
 }
 
+module "claude_configuration" {
+  for_each = github_repository.product_repository
+  source = "./modules/claude"
+
+  repository_name              = each.value.name
+  github_app_private_key       = data.scaleway_secret_version.github_app_private_key.data
+  github_app_installation_id   = data.scaleway_secret_version.github_app_installation_id.data
+  claude_code_oauth_token      = data.scaleway_secret_version.claude_code_oauth_token.data
+}
+
 resource "github_repository_ruleset" "protect_main" {
   for_each    = github_repository.product_repository
   name        = "protect-main"
@@ -143,6 +153,8 @@ resource "github_actions_secret" "github_argocd_repo_write_token" {
   secret_name = "argocd_repo_write_token"
   value       = sensitive(base64decode(data.scaleway_secret_version.argocd_repository_write_key.data))
 }
+
+
 
 resource "github_actions_secret" "secret_organization_id" {
   for_each = {
