@@ -87,6 +87,7 @@ resource "github_repository" "product_repository" {
   allow_merge_commit     = false
   allow_forking          = false
   delete_branch_on_merge = true
+  has_issues             = true
 
 
   template {

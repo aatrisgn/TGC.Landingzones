@@ -15,3 +15,9 @@ resource "github_actions_secret" "github_app_installation_id_secret" {
   secret_name = "app_installation_id"
   value       = sensitive(base64decode(var.github_app_installation_id))
 }
+
+resource "github_issue_label" "test_repo" {
+  repository = var.repository_name
+  name       = "claude"
+  color      = "FFA500"
+}
