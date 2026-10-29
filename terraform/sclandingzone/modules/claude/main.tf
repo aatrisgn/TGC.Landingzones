@@ -1,5 +1,5 @@
 resource "github_app_installation_repository" "some_app_repo" {
-  installation_id = var.github_app_installation_id
+  installation_id = sensitive(base64decode(var.github_app_installation_id))
   repository      = var.repository_name
 }
 
