@@ -33,26 +33,26 @@ resource "github_issue_label" "small_change_label" {
   repository  = var.repository_name
   name        = "GotItBruv"
   color       = "00FFF2"
-  description = "Small change label. Should be used for changes that are slightly larger than minor changes but still non-breaking."
+  description = "Small change label. Should be used for changes that are larger than minor changes and non-breaking."
 }
 
 resource "github_issue_label" "medium_change_label" {
   repository  = var.repository_name
   name        = "LetsCook"
   color       = "44FF00"
-  description = "Medium change label. Should be used for changes that are larger than small changes but still non-breaking."
+  description = "Medium change label. Should be used for changes that are medium in size and non-breaking."
 }
 
 resource "github_issue_label" "big_change_label" {
   repository  = var.repository_name
   name        = "WeBallin"
   color       = "FFD400"
-  description = "Big change label. Should be used for significant changes that may have a larger impact but are still non-breaking."
+  description = "second largest change label. Should be used for significant changes but are still non-breaking."
 }
 
 resource "github_issue_label" "huge_change_label" {
   repository  = var.repository_name
   name        = "LetsRipFoSho"
   color       = "FF2C00"
-  description = "Huge change label. Should be used for very large changes that may have a significant impact and are breaking."
+  description = "Largest change label. Should be used for very large changes that are breaking."
 }
