@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
     paths:
-        - "terraform/sclandingzone/*"
+        - "terraform/sclandingzone/**"
         - "Landingzones/*"
         - ".github/workflows/deploy_sclandingzone.yml"
   pull_request:
