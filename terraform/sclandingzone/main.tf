@@ -85,7 +85,7 @@ resource "github_repository" "product_repository" {
   allow_squash_merge     = true
   allow_rebase_merge     = true
   allow_merge_commit     = false
-  allow_forking          = false
+  allow_forking          = true
   delete_branch_on_merge = true
   has_issues             = true
 
@@ -93,7 +93,7 @@ resource "github_repository" "product_repository" {
   template {
     owner                = "aatrisgn"
     repository           = "default_repository"
-    include_all_branches = true
+    include_all_branches = false
   }
 
   lifecycle {
