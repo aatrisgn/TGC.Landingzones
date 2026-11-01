@@ -11,10 +11,10 @@ resource "scaleway_account_project" "landing_zone_project" {
 
 resource "scaleway_iam_policy" "policy" {
   for_each = { for env in local.environment_types : env => env }
-  
-  name    = "object-storage-policy-${each.value}"
+
+  name           = "object-storage-policy-${each.value}"
   application_id = data.scaleway_iam_application.this_app.id
-  
+
   rule {
     project_ids          = [scaleway_account_project.landing_zone_project[each.key].id]
     permission_set_names = ["ObjectStorageFullAccess", "ObjectStorageBucketPolicyFullAccess"]
@@ -22,11 +22,11 @@ resource "scaleway_iam_policy" "policy" {
 }
 
 resource "scaleway_object_bucket" "terraform_state_buckets" {
-  for_each = { for env in local.environment_types : env => env }
-  depends_on = [ scaleway_iam_policy.policy]
+  for_each   = { for env in local.environment_types : env => env }
+  depends_on = [scaleway_iam_policy.policy]
 
-  name     = "${each.value}-bucket-tfstate-fr-par"
-  region   = "fr-par"
+  name       = "${each.value}-bucket-tfstate-fr-par"
+  region     = "fr-par"
   project_id = scaleway_account_project.landing_zone_project[each.key].id
 
   object_lock_enabled = true
@@ -45,7 +45,7 @@ resource "scaleway_iam_application" "landingzone_app" {
 
 resource "scaleway_iam_group_membership" "member" {
   for_each = { for spn in scaleway_iam_application.landingzone_app : spn.name => spn }
-  
+
   group_id       = data.scaleway_iam_group.administrators.id
   application_id = each.value.id
 }
@@ -53,16 +53,16 @@ resource "scaleway_iam_group_membership" "member" {
 resource "scaleway_iam_api_key" "main" {
   for_each = { for env in local.environment_types : env => env }
 
-  application_id = scaleway_iam_application.landingzone_app[each.key].id
-  description    = "API key for landingzone application"
+  application_id     = scaleway_iam_application.landingzone_app[each.key].id
+  description        = "API key for landingzone application"
   default_project_id = scaleway_account_project.landing_zone_project[each.key].id
-  expires_at = time_rotating.rotate_after_a_year.rotation_rfc3339
+  expires_at         = time_rotating.rotate_after_a_year.rotation_rfc3339
 }
 
 resource "scaleway_iam_api_key" "landingzone_deployment_api_key" {
   application_id = data.scaleway_iam_application.this_app.id
   description    = "API key for landingzone bootstrapping"
-  expires_at = time_rotating.rotate_after_a_year.rotation_rfc3339
+  expires_at     = time_rotating.rotate_after_a_year.rotation_rfc3339
 }
 
 resource "github_repository" "landing_zone_repository" {
@@ -97,41 +97,44 @@ resource "github_actions_repository_permissions" "test" {
 resource "github_actions_secret" "state_access_access_key" {
   for_each = { for env in local.environment_types : env => env }
 
-  repository      = github_repository.landing_zone_repository.name
-  secret_name     = "scw_landingzone_${replace(each.key, "-", "_")}_state_access_key"
-  plaintext_value = scaleway_iam_api_key.main[each.key].access_key
+  repository  = github_repository.landing_zone_repository.name
+  secret_name = "scw_landingzone_${replace(each.key, "-", "_")}_state_access_key"
+  value       = sensitive(scaleway_iam_api_key.main[each.key].access_key)
 }
 
 resource "github_actions_secret" "state_secret_access_key" {
   for_each = { for env in local.environment_types : env => env }
 
-  repository      = github_repository.landing_zone_repository.name
-  secret_name     = "scw_landingzone_${replace(each.key, "-", "_")}_state_secret_access_key"
-  plaintext_value = scaleway_iam_api_key.main[each.key].secret_key
+  repository  = github_repository.landing_zone_repository.name
+  secret_name = "scw_landingzone_${replace(each.key, "-", "_")}_state_secret_access_key"
+
+  value = sensitive(scaleway_iam_api_key.main[each.key].secret_key)
 }
 
 resource "github_actions_secret" "state_bucket" {
   for_each = { for env in local.environment_types : env => env }
 
-  repository      = github_repository.landing_zone_repository.name
-  secret_name     = "scw_landingzone_${replace(each.key, "-", "_")}_state_bucket"
-  plaintext_value = scaleway_object_bucket.terraform_state_buckets[each.key].name
+  repository  = github_repository.landing_zone_repository.name
+  secret_name = "scw_landingzone_${replace(each.key, "-", "_")}_state_bucket"
+
+  value = sensitive(scaleway_object_bucket.terraform_state_buckets[each.key].name)
 }
 
 resource "github_actions_secret" "deployment_access_access_key" {
-  repository      = github_repository.landing_zone_repository.name
-  secret_name     = "scw_landingzone_bootstrap_deployment_access_key"
-  plaintext_value = scaleway_iam_api_key.landingzone_deployment_api_key.access_key
+  repository  = github_repository.landing_zone_repository.name
+  secret_name = "scw_landingzone_bootstrap_deployment_access_key"
+
+  value = sensitive(scaleway_iam_api_key.landingzone_deployment_api_key.access_key)
 }
 
 resource "github_actions_secret" "deployment_secret_access_key" {
-  repository      = github_repository.landing_zone_repository.name
-  secret_name     = "scw_landingzone_bootstrap_deployment_secret_access_key"
-  plaintext_value = scaleway_iam_api_key.landingzone_deployment_api_key.secret_key
+  repository  = github_repository.landing_zone_repository.name
+  secret_name = "scw_landingzone_bootstrap_deployment_secret_access_key"
+  value       = sensitive(scaleway_iam_api_key.landingzone_deployment_api_key.secret_key)
 }
 
 resource "github_actions_secret" "organization_id" {
-  repository      = github_repository.landing_zone_repository.name
-  secret_name     = "scw_organization_id"
-  plaintext_value = var.organization_id
+  repository  = github_repository.landing_zone_repository.name
+  secret_name = "scw_organization_id"
+  value       = sensitive(var.organization_id)
 }

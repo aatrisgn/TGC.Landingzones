@@ -11,6 +11,7 @@ variable "Products" {
           ContainerRegistryNeeded        = optional(bool, false)
           ApplicationDeveloperRoleNeeded = optional(bool, false)
           NeedsScaleway                  = optional(bool, false)
+          PrivateRepository              = optional(bool, false)
       }))
     })
   )
