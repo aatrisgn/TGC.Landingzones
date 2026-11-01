@@ -134,6 +134,14 @@ resource "github_repository_ruleset" "protect_main" {
   }
 }
 
+removed {
+  from = github_actions_repository_permissions.action_permissions["SenderMadsWedding"]
+
+  lifecycle {
+    destroy = true
+  }
+}
+
 resource "github_actions_repository_permissions" "action_permissions" {
   for_each = github_repository.product_repository
 
