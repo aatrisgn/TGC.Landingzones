@@ -114,6 +114,9 @@ jobs:
     - name: Terraform Validate
       run: terraform validate
 
+    - name: Refresh Terraform State
+      run: terraform apply -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=bucket_name="${{ secrets.SCW_LANDINGZONE_DEV_STATE_BUCKET }}" -var=environment="prd" -refresh-only -auto-approve
+
     - name: Terraform Plan
       id: plan
       run: terraform plan -input=false -var=organization_id="${{ secrets.SCW_ORGANIZATION_ID }}" -var=bucket_name="${{ secrets.SCW_LANDINGZONE_PRD_STATE_BUCKET }}" -var=environment="prd"
