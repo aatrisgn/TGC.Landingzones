@@ -1,6 +1,7 @@
 {
     "$schema": "../../Schemas/landingZoneSchema.json",
     "ProductName": "ArgoCD",
+    "PrivateRepository": true,
     "Environments": [
         {
             "Name":"Prd",
@@ -8,8 +9,7 @@
             "Type":"Prd",
             "ContainerRegistryNeeded":false,
             "ApplicationDeveloperRoleNeeded": false,
-            "NeedsScaleway":false,
-            "PrivateRepository": true
+            "NeedsScaleway":false
         }
     ]
 }

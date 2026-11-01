@@ -2,7 +2,8 @@ variable "Products" {
   description = "List of products"
   type = list(
     object({
-      ProductName = string
+      ProductName       = string
+      PrivateRepository = optional(bool, false)
       Environments = list(object(
         {
           Name                           = string
@@ -11,7 +12,6 @@ variable "Products" {
           ContainerRegistryNeeded        = optional(bool, false)
           ApplicationDeveloperRoleNeeded = optional(bool, false)
           NeedsScaleway                  = optional(bool, false)
-          PrivateRepository              = optional(bool, false)
       }))
     })
   )
