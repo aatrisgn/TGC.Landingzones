@@ -87,7 +87,7 @@ resource "github_repository" "product_repository" {
   allow_merge_commit     = false
   allow_forking          = true
   delete_branch_on_merge = true
-  has_issues             = true 
+  has_issues             = true
 
   template {
     owner                = "ThyregodConsulting"
