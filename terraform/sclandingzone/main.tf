@@ -91,7 +91,7 @@ resource "github_repository" "product_repository" {
 
 
   template {
-    owner                = "aatrisgn"
+    owner                = "ThyregodConsulting"
     repository           = "default_repository"
     include_all_branches = false
   }
@@ -141,7 +141,7 @@ resource "github_actions_repository_permissions" "action_permissions" {
   allowed_actions = "selected"
   allowed_actions_config {
     github_owned_allowed = true
-    patterns_allowed     = ["aatrisgn/*", "azure/*", "docker/*", "anthropics/*", "oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6"]
+    patterns_allowed     = ["aatrisgn/*", "ThyregodConsulting/*", "azure/*", "docker/*", "anthropics/*", "oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6"]
     verified_allowed     = false
   }
   repository = each.value.name

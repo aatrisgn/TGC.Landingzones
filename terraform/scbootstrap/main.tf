@@ -74,7 +74,7 @@ resource "github_repository" "landing_zone_repository" {
   allow_merge_commit = false
 
   template {
-    owner                = "aatrisgn"
+    owner                = "ThyregodConsulting"
     repository           = "default_repository"
     include_all_branches = true
   }
